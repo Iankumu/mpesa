@@ -193,10 +193,21 @@ You are free to customise the connfiguration values to your liking. An example w
 
 Code examples and usage can be found in [Usage.md](USAGE.md)
 
+### Testing
+
+```bash
+composer test
+```
+
 ### Contributing
 
 Thank you for considering contributing to Laravel Mpesa! All contributions and PR are welcome. You can read the contribution guide [here](CONTRIBUTING.md).
 
+### Credits
+
+-   [Ian Kumu](https://github.com/IanKumu)
+-   [All Contributors](../../contributors)
+
 ### License
 
-Laravel Mpesa is an open-sourced software licensed under the [MIT license](LICENSE.md).
+This package is an open-sourced software licensed under the [MIT license](LICENSE.md).

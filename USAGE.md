@@ -18,7 +18,9 @@ ssh -R 80:localhost:8000 nokey@localhost.run
 
 > `Don't` include these keywords in your urls when registering your callbacks
 >
-> > mpesa,safaricom or any other keyword related to Safaricom
+> -   mpesa,
+> -   safaricom
+> -   any other keyword related to Safaricom
 
 > Ensure all your callback urls are `https`.
 
