@@ -258,7 +258,7 @@ class Mpesa
             ];
         }
 
-        $url = $this->url . '/mpesa/c2b/v1/simulate';
+        $url = $this->url . '/mpesa/c2b/v2/simulate';
 
 
         $response = $this->MpesaRequest($url, $data);
