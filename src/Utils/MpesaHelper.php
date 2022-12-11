@@ -11,30 +11,6 @@ trait MpesaHelper
 {
 
     /**
-     * The Lipa Na MPesa shortcode
-     * @var int $shortcode
-     */
-    public $shortcode;
-
-    /**
-     * The Mpesa portal Password
-     * @var string $initiator_password
-     */
-    public $initiator_password;
-
-    /**
-     * The Mpesa Environment
-     * @var string $env
-     */
-    public $env;
-
-    /**
-     * The Mpesa Passkey
-     * @var string $passkey
-     */
-    public $passkey;
-
-    /**
      * The Base URL
      * @var string $url
      */
@@ -42,10 +18,6 @@ trait MpesaHelper
 
     public function __construct()
     {
-        $this->env = config('mpesa.environment');
-        $this->shortcode = config('mpesa.shortcode');
-        $this->passkey = config('mpesa.passkey');
-        $this->initiator_password = config('mpesa.initiator_password');
         $this->url = config('mpesa.environment') == 'sandbox'
             ? "https://sandbox.safaricom.co.ke"
             : "https://api.safaricom.co.ke";
@@ -87,7 +59,7 @@ trait MpesaHelper
     public function LipaNaMpesaPassword()
     {
         $timestamp = Carbon::rawParse('now')->format('YmdHms');
-        return base64_encode($this->shortcode . $this->passkey . $timestamp);
+        return base64_encode(config('mpesa.shortcode') . config('mpesa.passkey') . $timestamp);
     }
 
     public function phoneValidator($phoneno)
@@ -102,12 +74,12 @@ trait MpesaHelper
 
     public function generate_security_credential()
     {
-        if ($this->env == 'sandbox') {
+        if (config('mpesa.environment') == 'sandbox') {
             $pubkey = File::get(__DIR__ . '/../certificates/SandboxCertificate.cer');
         } else {
             $pubkey = File::get(__DIR__ . '/../certificates/ProductionCertificate.cer');
         }
-        openssl_public_encrypt($this->initiator_password, $output, $pubkey, OPENSSL_PKCS1_PADDING);
+        openssl_public_encrypt(config('mpesa.initiator_password'), $output, $pubkey, OPENSSL_PKCS1_PADDING);
         return base64_encode($output);
     }
 

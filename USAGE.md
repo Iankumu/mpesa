@@ -18,9 +18,9 @@ ssh -R 80:localhost:8000 nokey@localhost.run
 
 > `Don't` include these keywords in your urls when registering your callbacks
 >
-> -   mpesa
-> -   safaricom
-> -   any other keyword related to Safaricom
+> - mpesa
+> - safaricom
+> - any other keyword related to Safaricom
 
 > Ensure all your callback urls are `https`.
 
@@ -69,11 +69,11 @@ Upon successful urls registration you should get the following response
 
 ```json
 {
-    "MerchantRequestID": "",
-    "CheckoutRequestID": "",
-    "ResponseCode": "0",
-    "ResponseDescription": "Success. Request accepted for processing",
-    "CustomerMessage": "Success. Request accepted for processing"
+  "MerchantRequestID": "",
+  "CheckoutRequestID": "",
+  "ResponseCode": "0",
+  "ResponseDescription": "Success. Request accepted for processing",
+  "CustomerMessage": "Success. Request accepted for processing"
 }
 ```
 
@@ -83,37 +83,37 @@ After success you will get a callback via the `callbackurl` you provided.
 
 ```json
 {
-    "Body": {
-        "stkCallback": {
-            "MerchantRequestID": "5913-662870-1",
-            "CheckoutRequestID": "ws_CO_DMZ_224117480_19012019164445976",
-            "ResultCode": 0,
-            "ResultDesc": "The service request is processed successfully.",
-            "CallbackMetadata": {
-                "Item": [
-                    {
-                        "Name": "Amount",
-                        "Value": 1
-                    },
-                    {
-                        "Name": "MpesaReceiptNumber",
-                        "Value": "NAJ3ABAMIR"
-                    },
-                    {
-                        "Name": "Balance"
-                    },
-                    {
-                        "Name": "TransactionDate",
-                        "Value": 20190119164514
-                    },
-                    {
-                        "Name": "PhoneNumber",
-                        "Value": 254705112855
-                    }
-                ]
-            }
-        }
+  "Body": {
+    "stkCallback": {
+      "MerchantRequestID": "5913-662870-1",
+      "CheckoutRequestID": "ws_CO_DMZ_224117480_19012019164445976",
+      "ResultCode": 0,
+      "ResultDesc": "The service request is processed successfully.",
+      "CallbackMetadata": {
+        "Item": [
+          {
+            "Name": "Amount",
+            "Value": 1
+          },
+          {
+            "Name": "MpesaReceiptNumber",
+            "Value": "NAJ3ABAMIR"
+          },
+          {
+            "Name": "Balance"
+          },
+          {
+            "Name": "TransactionDate",
+            "Value": 20190119164514
+          },
+          {
+            "Name": "PhoneNumber",
+            "Value": 254705112855
+          }
+        ]
+      }
     }
+  }
 }
 ```
 
@@ -144,9 +144,9 @@ Upon successful urls registration you should get the following response
 
 ```json
 {
-    "OriginatorCoversationID": "",
-    "ResponseCode": "0",
-    "ResponseDescription": "success"
+  "OriginatorCoversationID": "",
+  "ResponseCode": "0",
+  "ResponseDescription": "success"
 }
 ```
 
@@ -174,9 +174,9 @@ Upon successful simulation you will receive a response similar to;
 
 ```json
 {
-    "ConversationID": "AG_20190115_00007fc37fc3db6e9562",
-    "OriginatorCoversationID": "10028-4198443-1",
-    "ResponseDescription": "Accept the service request successfully."
+  "ConversationID": "AG_20190115_00007fc37fc3db6e9562",
+  "OriginatorCoversationID": "10028-4198443-1",
+  "ResponseDescription": "Accept the service request successfully."
 }
 ```
 
@@ -195,7 +195,7 @@ To use this API you need to call `b2c()` method on the `Mpesa` facade. This func
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-Mpesa::b2c($phonenumber, $command_id, $amount, $remarks);
+$response =Mpesa::b2c($phonenumber, $command_id, $amount, $remarks);
 
 $result = json_decode($response);
 return $result;
@@ -213,10 +213,10 @@ Upon success you should receive a response similar to the one below
 
 ```json
 {
-    "ConversationID": "AG_20190117_00004636fb3ac56655df",
-    "OriginatorConversationID": "17503-13504109-1",
-    "ResponseCode": "0",
-    "ResponseDescription": "Accept the service request successfully."
+  "ConversationID": "AG_20190117_00004636fb3ac56655df",
+  "OriginatorConversationID": "17503-13504109-1",
+  "ResponseCode": "0",
+  "ResponseDescription": "Accept the service request successfully."
 }
 ```
 
@@ -224,56 +224,56 @@ After a successful transaction you will get a callback via the `b2c_result_url` 
 
 ```json
 {
-    "Result": {
-        "ResultType": 0,
-        "ResultCode": 0,
-        "ResultDesc": "The service request is processed successfully.",
-        "OriginatorConversationID": "10030-6237802-1",
-        "ConversationID": "AG_20190119_000053c075d4e13cbeae",
-        "TransactionID": "NAJ41H7YJQ",
-        "ResultParameters": {
-            "ResultParameter": [
-                {
-                    "Key": "TransactionReceipt",
-                    "Value": "NAJ41H7YJQ"
-                },
-                {
-                    "Key": "TransactionAmount",
-                    "Value": 100
-                },
-                {
-                    "Key": "B2CChargesPaidAccountAvailableFunds",
-                    "Value": -495
-                },
-                {
-                    "Key": "B2CRecipientIsRegisteredCustomer",
-                    "Value": "Y"
-                },
-                {
-                    "Key": "TransactionCompletedDateTime",
-                    "Value": "19.01.2019 17:01:27"
-                },
-                {
-                    "Key": "ReceiverPartyPublicName",
-                    "Value": "254708374149 - John Doe"
-                },
-                {
-                    "Key": "B2CWorkingAccountAvailableFunds",
-                    "Value": 600000
-                },
-                {
-                    "Key": "B2CUtilityAccountAvailableFunds",
-                    "Value": 235
-                }
-            ]
+  "Result": {
+    "ResultType": 0,
+    "ResultCode": 0,
+    "ResultDesc": "The service request is processed successfully.",
+    "OriginatorConversationID": "10030-6237802-1",
+    "ConversationID": "AG_20190119_000053c075d4e13cbeae",
+    "TransactionID": "NAJ41H7YJQ",
+    "ResultParameters": {
+      "ResultParameter": [
+        {
+          "Key": "TransactionReceipt",
+          "Value": "NAJ41H7YJQ"
         },
-        "ReferenceData": {
-            "ReferenceItem": {
-                "Key": "QueueTimeoutURL",
-                "Value": "https://internalsandbox.safaricom.co.ke/mpesa/b2cresults/v1/submit"
-            }
+        {
+          "Key": "TransactionAmount",
+          "Value": 100
+        },
+        {
+          "Key": "B2CChargesPaidAccountAvailableFunds",
+          "Value": -495
+        },
+        {
+          "Key": "B2CRecipientIsRegisteredCustomer",
+          "Value": "Y"
+        },
+        {
+          "Key": "TransactionCompletedDateTime",
+          "Value": "19.01.2019 17:01:27"
+        },
+        {
+          "Key": "ReceiverPartyPublicName",
+          "Value": "254708374149 - John Doe"
+        },
+        {
+          "Key": "B2CWorkingAccountAvailableFunds",
+          "Value": 600000
+        },
+        {
+          "Key": "B2CUtilityAccountAvailableFunds",
+          "Value": 235
         }
+      ]
+    },
+    "ReferenceData": {
+      "ReferenceItem": {
+        "Key": "QueueTimeoutURL",
+        "Value": "https://internalsandbox.safaricom.co.ke/mpesa/b2cresults/v1/submit"
+      }
     }
+  }
 }
 ```
 
@@ -292,7 +292,7 @@ To use this API you need to call `transactionStatus()` method on the `Mpesa` fac
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-Mpesa::transactionStatus($shortcode, $transactionid, $identiertype, $remarks);
+$response = Mpesa::transactionStatus($shortcode, $transactionid, $identiertype, $remarks);
 
 $result = json_decode($response);
 return $result;
@@ -300,7 +300,7 @@ return $result;
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-Mpesa::transactionStatus('600999', 'OEI2AK4Q16', 4, 'Check transaction status');
+$response = Mpesa::transactionStatus('600999', 'OEI2AK4Q16', 4, 'Check transaction status');
 
 $result = json_decode($response);
 return $result;
@@ -310,10 +310,10 @@ Upon success you should receive a response similar to the one below
 
 ```json
 {
-    "OriginatorConversationID": "1236-7134259-1",
-    "ConversationID": "AG_20210709_1234409f86436c583e3f",
-    "ResponseCode": "0",
-    "ResponseDescription": "Accept the service request successfully."
+  "OriginatorConversationID": "1236-7134259-1",
+  "ConversationID": "AG_20210709_1234409f86436c583e3f",
+  "ResponseCode": "0",
+  "ResponseDescription": "Accept the service request successfully."
 }
 ```
 
@@ -321,74 +321,74 @@ Safaricom will respond with the result through the `status_result_url` callback 
 
 ```json
 {
-    "Result": {
-        "ConversationID": "AG_20180223_0000493344ae97d86f75",
-        "OriginatorConversationID": "3213-416199-2",
-        "ReferenceData": {
-            "ReferenceItem": {
-                "Key": "Occasion"
-            }
+  "Result": {
+    "ConversationID": "AG_20180223_0000493344ae97d86f75",
+    "OriginatorConversationID": "3213-416199-2",
+    "ReferenceData": {
+      "ReferenceItem": {
+        "Key": "Occasion"
+      }
+    },
+    "ResultCode": 0,
+    "ResultDesc": "The service request is processed successfully.",
+    "ResultParameters": {
+      "ResultParameter": [
+        {
+          "Key": "DebitPartyName",
+          "Value": "600310 - Safaricom333"
         },
-        "ResultCode": 0,
-        "ResultDesc": "The service request is processed successfully.",
-        "ResultParameters": {
-            "ResultParameter": [
-                {
-                    "Key": "DebitPartyName",
-                    "Value": "600310 - Safaricom333"
-                },
-                {
-                    "Key": "CreditPartyName",
-                    "Value": "254708374149 - John Doe"
-                },
-                {
-                    "Key": "OriginatorConversationID",
-                    "Value": "3211-416020-3"
-                },
-                {
-                    "Key": "InitiatedTime",
-                    "Value": 20180223054112
-                },
-                {
-                    "Key": "DebitAccountType",
-                    "Value": "Utility Account"
-                },
-                {
-                    "Key": "DebitPartyCharges",
-                    "Value": "Fee For B2C Payment|KES|22.40"
-                },
-                {
-                    "Key": "TransactionReason"
-                },
-                {
-                    "Key": "ReasonType",
-                    "Value": "Business Payment to Customer via API"
-                },
-                {
-                    "Key": "TransactionStatus",
-                    "Value": "Completed"
-                },
-                {
-                    "Key": "FinalisedTime",
-                    "Value": 20180223054112
-                },
-                {
-                    "Key": "Amount",
-                    "Value": 300
-                },
-                {
-                    "Key": "ConversationID",
-                    "Value": "AG_20180223_000041b09c22e613d6c9"
-                },
-                {
-                    "Key": "ReceiptNo",
-                    "Value": "MBN31H462N"
-                }
-            ]
+        {
+          "Key": "CreditPartyName",
+          "Value": "254708374149 - John Doe"
         },
-        "ResultType": 0,
-        "TransactionID": "MBN0000000"
-    }
+        {
+          "Key": "OriginatorConversationID",
+          "Value": "3211-416020-3"
+        },
+        {
+          "Key": "InitiatedTime",
+          "Value": 20180223054112
+        },
+        {
+          "Key": "DebitAccountType",
+          "Value": "Utility Account"
+        },
+        {
+          "Key": "DebitPartyCharges",
+          "Value": "Fee For B2C Payment|KES|22.40"
+        },
+        {
+          "Key": "TransactionReason"
+        },
+        {
+          "Key": "ReasonType",
+          "Value": "Business Payment to Customer via API"
+        },
+        {
+          "Key": "TransactionStatus",
+          "Value": "Completed"
+        },
+        {
+          "Key": "FinalisedTime",
+          "Value": 20180223054112
+        },
+        {
+          "Key": "Amount",
+          "Value": 300
+        },
+        {
+          "Key": "ConversationID",
+          "Value": "AG_20180223_000041b09c22e613d6c9"
+        },
+        {
+          "Key": "ReceiptNo",
+          "Value": "MBN31H462N"
+        }
+      ]
+    },
+    "ResultType": 0,
+    "TransactionID": "MBN0000000"
+  }
 }
 ```
 
