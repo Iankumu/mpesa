@@ -1,0 +1,44 @@
+{
+    "name": "iankumu/mpesa",
+    "description": "A package that helps integrate the Mpesa APIs to your Laravel Project",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Iankumu\\Mpesa\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Iankumu\\Mpesa\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ian Kumu",
+            "email": "ian@iankumu.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Iankumu\\Mpesa\\MpesaServiceProvider"
+            ],
+            "aliases": {
+                "Mpesa": "Iankumu\\Mpesa\\Facades\\Mpesa"
+            }
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "minimum-stability": "dev",
+    "require-dev": {
+        "phpunit/phpunit": "9.5.x-dev",
+        "orchestra/testbench": "*"
+    },
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "9.x-dev"
+    }
+}
