@@ -68,7 +68,7 @@ php artisan mpesa:install
 php artisan vendor:publish --provider="IanKumu\LaravelMpesa\MpesaServiceProvider" --tag="config"
 ``` -->
 
-This will publish the `app/mpesa.php` file which contains the mpesa configurations for your applications. These credentials are provided on your [Safaricom Developer Portal](https://developer.safaricom.co.ke/). You also need to specify the application's environment; either `sandbox` or `production` so that the relevant api url endpoints are called.
+This will publish the `config/mpesa.php` file which contains the mpesa configurations for your applications. These credentials are provided on your [Safaricom Developer Portal](https://developer.safaricom.co.ke/). You also need to specify the application's environment; either `sandbox` or `production` so that the relevant api url endpoints are called.
 
 ```php
 // config/mpesa.php
