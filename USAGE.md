@@ -209,6 +209,17 @@ $result = json_decode($response);
 return $result;
 ```
 
+In some cases, You might want to verify the recipient of the payment, using their ID number. To do this, you need to call the `validated_b2c` method, and pass the recipients ID Number as the 5th parameter.
+If the ID provided does not match the phone number on Safaricom Database, the transaction will fail.
+
+```php
+use Iankumu\Mpesa\Facades\Mpesa;
+$response=Mpesa::validated_b2c('0708374149','SalaryPayment',1000,'salary payment','12345678');
+
+$result = json_decode($response);
+return $result;
+```
+
 Upon success you should receive a response similar to the one below
 
 ```json

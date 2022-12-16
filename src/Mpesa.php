@@ -199,6 +199,57 @@ class Mpesa
         $response = $this->MpesaRequest($url, $body);
         return $response;
     }
+    /**
+     * Business to Client With Validation
+     *
+     * This method is used to send money to a client's Mpesa account.
+     * It requires one to provide the id number of the recipient, and fails if the id number does not match the phone number.
+     *COMMON ERRORS
+     * 1. Duplicate Originator Conversation ID. -> This means you have already sent a request with the same OriginatorConversationID
+     * 2. Invalid Access    Token - Invalid API call as no apiproduct match found”. -> The Daraja sandbox/ production app
+    you are using to run the tests does not
+    have the B2C with validation product.
+    Send an email to
+    apisupport@safaricom.co.ke requesting
+    for addition of the product to your
+    sandbox app. Specify your
+    prod/sandbox app to which the product
+    should be added.
+     * @param int $amount The amount to send to the recipient
+     * @param int $phonenumber The phone number of the recipient in the format 254xxxxxxxxx
+     * @param string $command_id The type of transaction being made. Can be SalaryPayment,BusinessPayment or PromotionPayment
+     * @param string $remarks Any additional information. Must be present.
+     * @param string $id_number The id number of the recipient
+     * @return object Curl Response from Mpesa
+     */
+    public function validated_b2c($phonenumber, $command_id, $amount, $remarks,$id_number)
+    {
+        $url = $this->url . "/mpesa/b2cvalidate/v2/paymentrequest";
+
+        //get first two digits of the id number
+        $id_type = substr($id_number, 0, 2);
+        //the rest is the id number
+        $id_number = substr($id_number, 2);
+
+        $body = [
+            "InitiatorName" => $this->initiator_name,
+            "SecurityCredential" => $this->security_credential,
+            "CommandID" => $command_id, //can be SalaryPayment,BusinessPayment or PromotionPayment
+            "Amount" => $amount,
+            "PartyA" => $this->b2c_shortcode,
+            "PartyB" => $this->phoneValidator($phonenumber),
+            "Remarks" => $remarks,
+            "QueueTimeOutURL" => $this->b2ctimeout,
+            "ResultURL" => $this->b2cresult,
+            "Occassion" => '', //can be null
+            "OriginatorConversationID" => Carbon::rawParse('now')->format('YmdHms'),//unique id for the transaction
+            "IDType" => $id_type, //First two digits of the id number
+            "IDNumber" => $id_number,
+        ];
+
+        $response = $this->MpesaRequest($url, $body);
+        return $response;
+    }
 
     /**
      * Client to Business
