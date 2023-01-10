@@ -4,17 +4,26 @@ namespace Iankumu\Mpesa\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * @method static \Iankumu\Mpesa\Mpesa stkpush($phonenumber, $amount, $account_number,$callbackurl = null)
+ * @method static \Iankumu\Mpesa\Mpesa stkquery($checkoutRequestId)
+ * @method static \Iankumu\Mpesa\Mpesa b2c($phonenumber, $command_id, $amount, $remarks)
+ * @method static \Iankumu\Mpesa\Mpesa validated_b2c($phonenumber, $command_id, $amount, $remarks,$id_number)
+ * @method static \Iankumu\Mpesa\Mpesa c2bregisterURLS($shortcode)
+ * @method static \Iankumu\Mpesa\Mpesa c2bsimulate($phonenumber, $amount, $shortcode, $command_id, $account_number = NULL)
+ * @method static \Iankumu\Mpesa\Mpesa transactionStatus($shortcode, $transactionid, $identiertype, $remarks)
+ * @method static \Iankumu\Mpesa\Mpesa accountBalance($shortcode, $identiertype, $remarks)
+ * @method static \Iankumu\Mpesa\Mpesa reversal($shortcode, $transactionid, $amount, $remarks)
+ * 
+ */
+
 class Mpesa extends Facade
 {
+
     /**
-     * @method static stkpush($phonenumber, $amount, $account_number,$callbackurl = null);
-     * @method static stkquery($checkoutRequestId);
-     * @method static b2c($phonenumber, $command_id, $amount, $remarks);
-     * @method static c2bregisterURLS($shortcode);
-     * @method static c2bsimulate($phonenumber, $amount, $shortcode, $command_id, $account_number = NULL);
-     * @method static transactionStatus($shortcode, $transactionid, $identiertype, $remarks);
-     * @method static accountBalance($shortcode, $identiertype, $remarks);
-     * @method static reversal($shortcode, $transactionid, $amount, $remarks);
+     * Get the registered name of the component.
+     *
+     * @return string
      */
     protected static function getFacadeAccessor()
     {

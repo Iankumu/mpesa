@@ -6,7 +6,7 @@ Before you start interacting with Mpesa APIs, you need to set the `mpesa_consume
 
 You can also change the `environment` in your `config/mpesa.php` file to suit your needs. You can set it to either `sandbox` or `production` with the default being `sandbox`.
 
-If you are testing on localhost and using the sandbox environment, you might use [Localhost.run](https://localhost.run/) to expose your callbacks/webhooks to the internet. For some reason, Safaricom `blocks` [Ngrok](https://ngrok.com/) making testing through ngrok a pain.
+If you are testing on localhost and using the sandbox environment, you might use [Localhost.run](https://localhost.run/) or [LocalTunnel](https://localtunnel.github.io/www/) to expose your callbacks/webhooks to the internet. For some reason, Safaricom `blocks` [Ngrok](https://ngrok.com/) making testing through ngrok a pain.
 
 You can run this command in your terminal to expose port 8000 to the internet.
 

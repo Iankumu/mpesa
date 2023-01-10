@@ -4,13 +4,12 @@ A Laravel package for the [Mpesa Daraja Apis](https://developer.safaricom.co.ke/
 
 The package contains implementation of the following Daraja APIs
 
--   Lipa na Mpesa Express Online(STKPUSH)
--   Business to Customer(B2C)
--   Customer to Business(C2B)
--   Transaction status
--   Transaction status
--   Account Balance
--   Reversals
+- Lipa na Mpesa Express Online(STKPUSH)
+- Business to Customer(B2C)
+- Customer to Business(C2B)
+- Transaction status
+- Account Balance
+- Reversals
 
 ## Installation
 
@@ -205,8 +204,8 @@ Thank you for considering contributing to Laravel Mpesa! All contributions and P
 
 ### Credits
 
--   [Ian Kumu](https://github.com/IanKumu)
--   [All Contributors](../../contributors)
+- [Ian Kumu](https://github.com/IanKumu)
+- [All Contributors](../../contributors)
 
 ### License
 

@@ -106,7 +106,7 @@ class Mpesa
     public function stkpush($phonenumber, $amount, $account_number, $callbackurl = null)
     {
         $url = $this->url . "/mpesa/stkpush/v1/processrequest";
-        $curl_post_data = [
+        $data = [
             //Fill in the request parameters with valid values
             'BusinessShortCode' => $this->shortcode, //Has to be a paybill and not a till number since it is not supported
             'Password' => $this->lipaNaMpesaPassword(),
@@ -122,15 +122,15 @@ class Mpesa
 
         //url should be https and should not contain keywords such as mpesa,safaricom etc
         if (!is_null($callbackurl) && is_null($this->stkcallback)) {
-            $curl_post_data += [
+            $data += [
                 'CallBackURL' => $callbackurl
             ];
         } elseif (is_null($callbackurl) && !is_null($this->stkcallback)) {
-            $curl_post_data += [
+            $data += [
                 'CallBackURL' => $this->stkcallback
             ];
         } elseif (!is_null($callbackurl) && !is_null($this->stkcallback)) {
-            $curl_post_data += [
+            $data += [
                 'CallBackURL' => $callbackurl
             ];
         } else {
@@ -139,7 +139,7 @@ class Mpesa
             ], Response::HTTP_NOT_ACCEPTABLE);
         }
 
-        $response = $this->MpesaRequest($url, $curl_post_data);
+        $response = $this->MpesaRequest($url, $data);
         return $response;
     }
 
@@ -204,17 +204,17 @@ class Mpesa
      *
      * This method is used to send money to a client's Mpesa account.
      * It requires one to provide the id number of the recipient, and fails if the id number does not match the phone number.
-     *COMMON ERRORS
+     * COMMON ERRORS
      * 1. Duplicate Originator Conversation ID. -> This means you have already sent a request with the same OriginatorConversationID
      * 2. Invalid Access    Token - Invalid API call as no apiproduct match found”. -> The Daraja sandbox/ production app
-    you are using to run the tests does not
-    have the B2C with validation product.
-    Send an email to
-    apisupport@safaricom.co.ke requesting
-    for addition of the product to your
-    sandbox app. Specify your
-    prod/sandbox app to which the product
-    should be added.
+     * you are using to run the tests does not
+     * have the B2C with validation product.
+     * Send an email to
+     * apisupport@safaricom.co.ke requesting
+     * for addition of the product to your
+     * sandbox app. Specify your
+     * prod/sandbox app to which the product
+     * should be added.
      * @param int $amount The amount to send to the recipient
      * @param int $phonenumber The phone number of the recipient in the format 254xxxxxxxxx
      * @param string $command_id The type of transaction being made. Can be SalaryPayment,BusinessPayment or PromotionPayment
@@ -222,7 +222,7 @@ class Mpesa
      * @param string $id_number The id number of the recipient
      * @return object Curl Response from Mpesa
      */
-    public function validated_b2c($phonenumber, $command_id, $amount, $remarks,$id_number)
+    public function validated_b2c($phonenumber, $command_id, $amount, $remarks, $id_number)
     {
         $url = $this->url . "/mpesa/b2cvalidate/v2/paymentrequest";
 
@@ -242,7 +242,7 @@ class Mpesa
             "QueueTimeOutURL" => $this->b2ctimeout,
             "ResultURL" => $this->b2cresult,
             "Occassion" => '', //can be null
-            "OriginatorConversationID" => Carbon::rawParse('now')->format('YmdHms'),//unique id for the transaction
+            "OriginatorConversationID" => Carbon::rawParse('now')->format('YmdHms'), //unique id for the transaction
             "IDType" => $id_type, //First two digits of the id number
             "IDNumber" => $id_number,
         ];
@@ -287,7 +287,7 @@ class Mpesa
      * @param string $account_number The account number for a paybill. The default is null
      * @return object Curl Response from Safaricom
      */
-    public function c2bsimulate($phonenumber, $amount, $shortcode, $command_id, $account_number = NULL)
+    public function c2bsimulate($phonenumber, $amount, $shortcode, $command_id, $account_number = null)
     {
 
         if ($command_id == 'CustomerPayBillOnline') {
