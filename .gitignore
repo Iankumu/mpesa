@@ -1,3 +1,9 @@
 vendor
 composer.lock
 .phpunit.result.cache
+.idea
+coverage
+build
+.fleet
+.DS_Store
+
