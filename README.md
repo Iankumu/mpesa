@@ -19,40 +19,6 @@ You can install this package through composer
 composer require iankumu/mpesa
 ```
 
-If you are using laravel version `5.5 or greater` then you are `good to go`.
-
-If your Laravel application is on version `5.4`, you have to `register the service provider` to the `config/app.php` file.
-
-Add this part to the `providers` array
-
-```php
-<?php
-// config/app.php
-return [
-    // ...
-    'providers' => [
-        // ...
-        IanKumu\Mpesa\MpesaServiceProvider::class
-    ]
-    // ...
-];
-```
-
-You can also add the `Mpesa` alias to the `aliases` array
-
-```php
-<?php
-// config/app.php
-return [
-    // ...
-    'aliases' => [
-        // ...
-        'Mpesa'=>Iankumu\Mpesa\Facades\Mpesa::class
-    ]
-    // ...
-];
-```
-
 ## Configuration
 
 The next step is to publish the application configurations. Run the following command
