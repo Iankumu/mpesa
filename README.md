@@ -1,5 +1,9 @@
 # Mpesa Package for Laravel
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/Iankumu/mpesa.svg?style=flat-square)](https://packagist.org/packages/Iankumu/mpesa)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/Iankumu/mpesa/ci.yml?branch=main&label=tests&style=flat-square)](https://github.com/Iankumu/mpesa/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/Iankumu/mpesa.svg?style=flat-square)](https://packagist.org/packages/Iankumu/mpesa)
+
 A Laravel package for the [Mpesa Daraja Apis](https://developer.safaricom.co.ke/APIs).This package allows you to integrate the Mpesa Daraja Apis into your Laravel Application with ease.
 
 The package contains implementation of the following Daraja APIs
@@ -17,40 +21,6 @@ You can install this package through composer
 
 ```bash
 composer require iankumu/mpesa
-```
-
-If you are using laravel version `5.5 or greater` then you are `good to go`.
-
-If your Laravel application is on version `5.4`, you have to `register the service provider` to the `config/app.php` file.
-
-Add this part to the `providers` array
-
-```php
-<?php
-// config/app.php
-return [
-    // ...
-    'providers' => [
-        // ...
-        IanKumu\Mpesa\MpesaServiceProvider::class
-    ]
-    // ...
-];
-```
-
-You can also add the `Mpesa` alias to the `aliases` array
-
-```php
-<?php
-// config/app.php
-return [
-    // ...
-    'aliases' => [
-        // ...
-        'Mpesa'=>Iankumu\Mpesa\Facades\Mpesa::class
-    ]
-    // ...
-];
 ```
 
 ## Configuration
