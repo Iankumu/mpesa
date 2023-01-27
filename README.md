@@ -1,3 +1,5 @@
+![Laravel Mpesa Package](https://www.iankumu.com/blog/wp-content/uploads/2023/01/Laravel-Mpesa-Banner.png)
+
 # Mpesa Package for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/Iankumu/mpesa.svg?style=flat-square)](https://packagist.org/packages/Iankumu/mpesa)
@@ -156,11 +158,13 @@ return [
 
 For security reasons you need to define your API credentials in `.env` file.
 
-You are free to customise the connfiguration values to your liking. An example would be to set the callback urls using the `route()` or `url()` helpers as opposed to adding them to the `.env` file.
+You are free to customise the configuration values to your liking. An example would be to set the callback urls directly to the config file as opposed to adding them to the `.env` file.
 
 ### Usage
 
 Code examples and usage can be found in [Usage.md](USAGE.md)
+
+If you prefer a step by step tutorial, you can read the article I wrote on [How to integrate Mpesa into your Laravel Application](https://www.iankumu.com/blog/laravel-mpesa).
 
 ### Testing
 

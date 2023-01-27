@@ -41,7 +41,7 @@ This method requires a few parameters:
 use Iankumu\Mpesa\Facades\Mpesa;
 $response=Mpesa::stkpush($phonenumber, $amount, $account_number,$callbackurl = null);
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -51,7 +51,7 @@ If you `have not` registered a `callback_url` in the `config/mpesa.php` file, yo
 use Iankumu\Mpesa\Facades\Mpesa;
 $response=Mpesa::stkpush('0707070707', 100, '12345');
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -61,7 +61,7 @@ OR
 use Iankumu\Mpesa\Facades\Mpesa;
 $response=Mpesa::stkpush('0707070707', 100, '12345','https://test.test/callback');
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -125,7 +125,7 @@ This API enables you to register the callback URLs through which you can receive
 use Iankumu\Mpesa\Facades\Mpesa;
 $response=Mpesa::c2bregisterURLS($shortcode);
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -136,7 +136,7 @@ You can now call the `c2bregisterURLS()` method on `Mpesa` facade and pass a sho
 use Iankumu\Mpesa\Facades\Mpesa;
 $response = Mpesa::c2bregisterURLS(600998);
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -166,7 +166,7 @@ To simulate you need to pass these parameters to `c2bsimulate` method.
 use Iankumu\Mpesa\Facades\Mpesa;
 $response=Mpesa::c2bsimulate($phonenumber, $amount, $shortcode, $command_id, $account_number = NULL);
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -197,7 +197,7 @@ To use this API you need to call `b2c()` method on the `Mpesa` facade. This func
 use Iankumu\Mpesa\Facades\Mpesa;
 $response =Mpesa::b2c($phonenumber, $command_id, $amount, $remarks);
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -205,7 +205,7 @@ return $result;
 use Iankumu\Mpesa\Facades\Mpesa;
 $response=Mpesa::b2c('0708374149','SalaryPayment',1000,'salary payment');
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -216,7 +216,7 @@ If the ID provided does not match the phone number on Safaricom Database, the tr
 use Iankumu\Mpesa\Facades\Mpesa;
 $response=Mpesa::validated_b2c('0708374149','SalaryPayment',1000,'salary payment','12345678');
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -305,7 +305,7 @@ To use this API you need to call `transactionStatus()` method on the `Mpesa` fac
 use Iankumu\Mpesa\Facades\Mpesa;
 $response = Mpesa::transactionStatus($shortcode, $transactionid, $identiertype, $remarks);
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -313,7 +313,7 @@ return $result;
 use Iankumu\Mpesa\Facades\Mpesa;
 $response = Mpesa::transactionStatus('600999', 'OEI2AK4Q16', 4, 'Check transaction status');
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -419,7 +419,7 @@ To use this API you need to call `accountBalance()` method on the `Mpesa` facade
 use Iankumu\Mpesa\Facades\Mpesa;
 $response = Mpesa::accountBalance($shortcode, $identiertype, $remarks);
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -427,7 +427,7 @@ return $result;
 use Iankumu\Mpesa\Facades\Mpesa;
 $response = Mpesa::accountBalance('600983', 4, 'check account balance');
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -448,7 +448,7 @@ To use this API you need to call `reversal()` method on the `Mpesa` facade. This
 use Iankumu\Mpesa\Facades\Mpesa;
 $response = Mpesa::reversal($shortcode, $transactionid, $amount, $remarks);
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
 
@@ -456,6 +456,6 @@ return $result;
 use Iankumu\Mpesa\Facades\Mpesa;
 $response = Mpesa::reversal('600981','OEI2AK4Q16', 500, 'Wrong Payment');
 
-$result = json_decode($response);
+$result = json_decode((string)$response);
 return $result;
 ```
