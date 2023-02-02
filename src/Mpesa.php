@@ -225,12 +225,6 @@ class Mpesa
     public function validated_b2c($phonenumber, $command_id, $amount, $remarks, $id_number)
     {
         $url = $this->url . "/mpesa/b2cvalidate/v2/paymentrequest";
-
-        //get first two digits of the id number
-        $id_type = substr($id_number, 0, 2);
-        //the rest is the id number
-        $id_number = substr($id_number, 2);
-
         $body = [
             "InitiatorName" => $this->initiator_name,
             "SecurityCredential" => $this->security_credential,
@@ -243,12 +237,10 @@ class Mpesa
             "ResultURL" => $this->b2cresult,
             "Occassion" => '', //can be null
             "OriginatorConversationID" => Carbon::rawParse('now')->format('YmdHms'), //unique id for the transaction
-            "IDType" => $id_type, //First two digits of the id number
+            "IDType" => "01", //01 for national id
             "IDNumber" => $id_number,
         ];
-
-        $response = $this->MpesaRequest($url, $body);
-        return $response;
+        return $this->MpesaRequest($url, $body);
     }
 
     /**
