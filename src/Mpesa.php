@@ -2,6 +2,7 @@
 
 namespace Iankumu\Mpesa;
 
+use Iankumu\Mpesa\Exceptions\CallbackException;
 use Iankumu\Mpesa\Utils\MpesaHelper;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -101,7 +102,7 @@ class Mpesa
      * @param int $phonenumber The phone number that will receive the stkpush prompt in the format 254xxxxxxxxx
      * @param int $amount The amount to be transacted
      * @param string $account_number The account number for a paybill
-     * @return object Curl Response from Mpesa
+     * @return \Illuminate\Http\Client\Response
      */
     public function stkpush($phonenumber, $amount, $account_number, $callbackurl = null)
     {
@@ -134,13 +135,13 @@ class Mpesa
                 'CallBackURL' => $callbackurl
             ];
         } else {
-            return response()->json([
-                'error' => 'Callback URL cannot be null'
-            ], Response::HTTP_NOT_ACCEPTABLE);
+            throw CallbackException::make(
+                'callback_url',
+                'Ensure you have set a Callback URL in the mpesa config file'
+            );
         }
 
-        $response = $this->MpesaRequest($url, $data);
-        return $response;
+        return $this->MpesaRequest($url, $data);
     }
 
     /**
@@ -149,7 +150,7 @@ class Mpesa
      * This method is used to check the status of a Lipa Na M-Pesa Online Payment.
      *
      * @param string $checkoutRequestId This is a global unique identifier of the processed checkout transaction request.
-     * @return object Curl Response from Mpesa
+     * @return \Illuminate\Http\Client\Response
      */
 
     public function stkquery($checkoutRequestId)
@@ -163,8 +164,7 @@ class Mpesa
 
         $url = $this->url . "/mpesa/stkpushquery/v1/query";
 
-        $response = $this->MpesaRequest($url, $post_data);
-        return $response;
+        return $this->MpesaRequest($url, $post_data);
     }
 
 
@@ -177,7 +177,7 @@ class Mpesa
      * @param int $phonenumber The phone number of the recipient in the format 254xxxxxxxxx
      * @param string $command_id The type of transaction being made. Can be SalaryPayment,BusinessPayment or PromotionPayment
      * @param string $remarks Any additional information. Must be present.
-     * @return object Curl Response from Mpesa
+     * @return \Illuminate\Http\Client\Response
      */
     public function b2c($phonenumber, $command_id, $amount, $remarks)
     {
@@ -196,8 +196,21 @@ class Mpesa
             "Occassion" => '', //can be null
         ];
 
-        $response = $this->MpesaRequest($url, $body);
-        return $response;
+        if (is_null($this->b2cresult)) {
+            throw CallbackException::make(
+                'b2c_result_url',
+                'Ensure you have set the B2C Result URL in the mpesa config file'
+            );
+        }
+
+        if (is_null($this->b2ctimeout)) {
+            throw CallbackException::make(
+                'b2c_timeout_url',
+                'Ensure you have set the B2C Timeout URL in the mpesa config file'
+            );
+        }
+
+        return $this->MpesaRequest($url, $body);
     }
     /**
      * Business to Client With Validation
@@ -220,7 +233,7 @@ class Mpesa
      * @param string $command_id The type of transaction being made. Can be SalaryPayment,BusinessPayment or PromotionPayment
      * @param string $remarks Any additional information. Must be present.
      * @param string $id_number The id number of the recipient
-     * @return object Curl Response from Mpesa
+     * @return \Illuminate\Http\Client\Response
      */
     public function validated_b2c($phonenumber, $command_id, $amount, $remarks, $id_number)
     {
@@ -240,6 +253,21 @@ class Mpesa
             "IDType" => "01", //01 for national id
             "IDNumber" => $id_number,
         ];
+
+        if (is_null($this->b2cresult)) {
+            throw CallbackException::make(
+                'b2c_result_url',
+                'Ensure you have set the B2C Result URL in the mpesa config file'
+            );
+        }
+
+        if (is_null($this->b2ctimeout)) {
+            throw CallbackException::make(
+                'b2c_timeout_url',
+                'Ensure you have set the B2C Timeout URL in the mpesa config file'
+            );
+        }
+
         return $this->MpesaRequest($url, $body);
     }
 
@@ -249,7 +277,7 @@ class Mpesa
      * This method is used to register URLs for callbacks when money is sent from the MPesa toolkit menu
      *
      * @param string $shortcode The till number or paybill number the urls will be associated with
-     * @return object Curl Response from Mpesa
+     * @return \Illuminate\Http\Client\Response 
      */
     public function c2bregisterURLS($shortcode)
     {
@@ -263,8 +291,21 @@ class Mpesa
             "ValidationURL" => $this->c2bvalidate, //url should be https and should not contain keywords such as mpesa,safaricom etc
         ];
 
-        $response = $this->MpesaRequest($url, $body);
-        return $response;
+        if (is_null($this->c2bconfirm)) {
+            throw CallbackException::make(
+                'c2b_confirmation_url',
+                'Ensure you have set the C2B Confirmation URL in the mpesa config file'
+            );
+        }
+
+        if (is_null($this->c2bvalidate)) {
+            throw CallbackException::make(
+                'c2b_validation_url',
+                'Ensure you have set the C2B Validate URL in the mpesa config file'
+            );
+        }
+
+        return $this->MpesaRequest($url, $body);
     }
 
     /**
@@ -277,7 +318,7 @@ class Mpesa
      * @param string $shortcode The Paybill/Till number receiving the funds
      * @param string $command_id The Type of transaction. Whether it is a paybill transaction(CustomerPayBillOnline) or a Till number transaction(CustomerBuyGoodsOnline)
      * @param string $account_number The account number for a paybill. The default is null
-     * @return object Curl Response from Safaricom
+     * @return \Illuminate\Http\Client\Response
      */
     public function c2bsimulate($phonenumber, $amount, $shortcode, $command_id, $account_number = null)
     {
@@ -303,9 +344,7 @@ class Mpesa
 
         $url = $this->url . '/mpesa/c2b/v2/simulate';
 
-
-        $response = $this->MpesaRequest($url, $data);
-        return $response;
+        return $this->MpesaRequest($url, $data);
     }
 
 
@@ -318,7 +357,7 @@ class Mpesa
      * @param string $transactionid Unique identifier to identify a transaction on M-Pesa
      * @param int $identiertype identifier to identify the orginization
      * @param string $remarks Any additional information. Must be present.
-     * @return object Curl Response from Safaricom
+     * @return \Illuminate\Http\Client\Response
      */
     public function transactionStatus($shortcode, $transactionid, $identiertype, $remarks)
     {
@@ -338,8 +377,21 @@ class Mpesa
             "Occassion" => "",
         ];
 
-        $response = $this->MpesaRequest($url, $body);
-        return $response;
+        if (is_null($this->statusresult)) {
+            throw CallbackException::make(
+                'status_result_url',
+                'Ensure you have set the Transaction Status Result URL in the mpesa config file'
+            );
+        }
+
+        if (is_null($this->statustimeout)) {
+            throw CallbackException::make(
+                'status_timeout_url',
+                'Ensure you have set the Transaction Status Timeout URL in the mpesa config file'
+            );
+        }
+
+        return $this->MpesaRequest($url, $body);
     }
 
     /**
@@ -350,7 +402,7 @@ class Mpesa
      * @param int $shortcode Organization/MSISDN receiving the transaction
      * @param int $identiertype identifier to identify the orginization
      * @param string $remarks Any additional information. Must be present.
-     * @return object Curl Response from Safaricom
+     * @return \Illuminate\Http\Client\Response
      */
     public function accountBalance($shortcode, $identiertype, $remarks)
     {
@@ -367,8 +419,21 @@ class Mpesa
             "QueueTimeOutURL" => $this->baltimeout,
         ];
 
-        $response = $this->MpesaRequest($url, $body);
-        return $response;
+        if (is_null($this->statusresult)) {
+            throw CallbackException::make(
+                'balance_result_url',
+                'Ensure you have set the Account Balance Result URL in the mpesa config file'
+            );
+        }
+
+        if (is_null($this->statustimeout)) {
+            throw CallbackException::make(
+                'balance_timeout_url',
+                'Ensure you have set the Account Balance Timeout URL in the mpesa config file'
+            );
+        }
+
+        return $this->MpesaRequest($url, $body);
     }
 
     /**
@@ -380,7 +445,7 @@ class Mpesa
      * @param int $shortcode Your Org's shortcode.
      * @param string $transactionid This is the M-Pesa Transaction ID of the transaction which you wish to reverse.
      * @param string $remarks Any additional information. Must be present.
-     * @return object Curl Response from Safaricom
+     * @return \Illuminate\Http\Client\Response
      */
     public function reversal($shortcode, $transactionid, $amount, $remarks)
     {
@@ -401,7 +466,20 @@ class Mpesa
             "Occasion" => ""
         ];
 
-        $response = $this->MpesaRequest($url, $body);
-        return $response;
+        if (is_null($this->reverseresult)) {
+            throw CallbackException::make(
+                'reversal_result_url',
+                'Ensure you have set the Reversal Result URL in the mpesa config file'
+            );
+        }
+
+        if (is_null($this->reversetimeout)) {
+            throw CallbackException::make(
+                'reversal_timeout_url',
+                'Ensure you have set the Reversal Timeout URL in the mpesa config file'
+            );
+        }
+
+        return $this->MpesaRequest($url, $body);
     }
 }

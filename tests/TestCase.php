@@ -2,7 +2,7 @@
 
 namespace Iankumu\Mpesa\Tests;
 
-use Iankumu\Mpesa\Mpesa;
+use Iankumu\Mpesa\MpesaServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
@@ -13,7 +13,6 @@ class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
-        config(['app.url' => 'https://49cb48b01f608f.lhr.life']);
     }
 
     /*
@@ -27,6 +26,9 @@ class TestCase extends Orchestra
     {
         // Alter the testing mpesa environment
         $app['config']->set('mpesa.environment', 'sandbox');
+        $app['config']->set('mpesa.mpesa_consumer_key', '12345');
+        $app['config']->set('mpesa.mpesa_consumer_secret', '12345');
+        $app['config']->set('mpesa.callback_url', null);
     }
 
     /**
@@ -35,7 +37,9 @@ class TestCase extends Orchestra
      */
     protected function getPackageProviders($app)
     {
-        return ['Iankumu\Mpesa\MpesaServiceProvider'];
+        return [
+            MpesaServiceProvider::class
+        ];
     }
 
     /** @test */

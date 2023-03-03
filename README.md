@@ -166,6 +166,8 @@ Code examples and usage can be found in [Usage.md](USAGE.md)
 
 If you prefer a step by step tutorial, you can read the article I wrote on [How to integrate Mpesa into your Laravel Application](https://www.iankumu.com/blog/laravel-mpesa).
 
+You can also find a [demo application](https://github.com/Iankumu/Payments) I created that uses the package. It provides a starting point on how to integrate Mpesa into a Laravel Application.
+
 ### Testing
 
 ```bash

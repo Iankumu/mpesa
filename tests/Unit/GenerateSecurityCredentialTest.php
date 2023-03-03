@@ -4,7 +4,6 @@ namespace Iankumu\Mpesa\Tests\Unit;
 
 use Iankumu\Mpesa\Mpesa;
 use Iankumu\Mpesa\Tests\TestCase;
-use Iankumu\Mpesa\Utils\MpesaHelper;
 
 class GenerateSecurityCredentialTest extends TestCase
 {
