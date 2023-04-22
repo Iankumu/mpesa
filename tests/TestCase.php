@@ -7,14 +7,6 @@ use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
-    /**
-     * Set up
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     /*
      * Define environment setup.
      *
@@ -28,23 +20,16 @@ class TestCase extends Orchestra
         $app['config']->set('mpesa.environment', 'sandbox');
         $app['config']->set('mpesa.mpesa_consumer_key', '12345');
         $app['config']->set('mpesa.mpesa_consumer_secret', '12345');
-        $app['config']->set('mpesa.callback_url', null);
     }
 
     /**
-     * @param Application $app
+     * @param  Application  $app
      * @return array
      */
     protected function getPackageProviders($app)
     {
         return [
-            MpesaServiceProvider::class
+            MpesaServiceProvider::class,
         ];
-    }
-
-    /** @test */
-    public function false()
-    {
-        $this->assertFalse(false);
     }
 }

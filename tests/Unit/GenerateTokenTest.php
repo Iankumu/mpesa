@@ -3,23 +3,20 @@
 namespace Iankumu\Mpesa\Tests\Unit;
 
 use Iankumu\Mpesa\Mpesa;
-use Iankumu\Mpesa\Tests\TestCase;
+use Illuminate\Support\Facades\Http;
 
-class GenerateTokenTest extends TestCase
-{
+it('can generate token', function () {
 
+    $expectedResponse = [
+        'access_token' => 'Test Token',
+        'expires_in' => '3599',
+    ];
 
-    /** @test */
-    public function can_generate_token()
-    {
+    Http::fake([
+        'https://sandbox.safaricom.co.ke/*' => Http::response($expectedResponse),
+    ]);
 
-        $mpesaStub = $this->createStub(Mpesa::class);
+    $response = (new Mpesa())->generateAccessToken();
 
-        $mpesaStub->method('generateAccessToken')->willReturn(true);
-
-
-        $result = $mpesaStub->generateAccessToken();
-
-        $this->assertSame(true, $result);
-    }
-}
+    expect($response)->toBe('Test Token');
+});

@@ -16,13 +16,11 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Iankumu\Mpesa\Mpesa accountBalance($shortcode, $identiertype, $remarks)
  * @method static \Iankumu\Mpesa\Mpesa reversal($shortcode, $transactionid, $amount, $remarks)
  * @method static \Iankumu\Mpesa\Mpesa validationResponse($result_code, $result_description)
- * 
+ *
  * @see MpesaGateway
  */
-
 class Mpesa extends Facade
 {
-
     /**
      * Get the registered name of the component.
      *

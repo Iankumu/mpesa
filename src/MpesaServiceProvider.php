@@ -2,9 +2,8 @@
 
 namespace Iankumu\Mpesa;
 
-use Iankumu\Mpesa\Mpesa;
-use Illuminate\Support\ServiceProvider;
 use Iankumu\Mpesa\Console\InstallMpesaPackage;
+use Illuminate\Support\ServiceProvider;
 
 class MpesaServiceProvider extends ServiceProvider
 {
@@ -28,15 +27,14 @@ class MpesaServiceProvider extends ServiceProvider
     public function boot()
     {
 
-
         if ($this->app->runningInConsole()) {
 
             $this->publishes([
-                __DIR__ . '/../config/mpesa.php' => config_path('mpesa.php')
+                __DIR__.'/../config/mpesa.php' => config_path('mpesa.php'),
             ], 'mpesa-config');
 
             $this->commands([
-                InstallMpesaPackage::class
+                InstallMpesaPackage::class,
             ]);
         }
     }

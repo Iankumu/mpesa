@@ -2,24 +2,19 @@
 
 namespace Iankumu\Mpesa\Tests\Unit;
 
-use Iankumu\Mpesa\Tests\TestCase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 
-class InstallMpesaPackageTest extends TestCase
-{
-    /** @test */
-    public function copy_config_file()
-    {
-        // remove if exists
-        if (File::exists(config_path('mpesa.php'))) {
-            unlink(config_path('mpesa.php'));
-        }
+it('can copy config file', function () {
 
-        $this->assertFalse(File::exists(config_path('mpesa.php')));
-
-        Artisan::call('mpesa:install');
-
-        $this->assertTrue(File::exists(config_path('mpesa.php')));
+    // remove if exists
+    if (File::exists(config_path('mpesa.php'))) {
+        unlink(config_path('mpesa.php'));
     }
-}
+
+    expect(File::exists(config_path('mpesa.php')))->toBeFalse();
+
+    Artisan::call('mpesa:install');
+
+    expect(File::exists(config_path('mpesa.php')))->toBeTrue();
+});
