@@ -117,6 +117,34 @@ After success you will get a callback via the `callbackurl` you provided.
 }
 ```
 
+## STKPUSH Query
+
+This API enables you to query the status of STKPUSH payment. This is useful of you want to know what exatly happened when the prompt was sent to the user's phonenumber. You can get information regarding whether a user `cancelled the transaction`, if they had `insufficient balance` etc.
+
+```php
+use Iankumu\Mpesa\Facades\Mpesa;
+$response=Mpesa::stkquery($checkoutRequestId);
+
+$result = json_decode((string)$response);
+return $result;
+
+```
+
+It is good practice to store the `checkoutRequestID` you received from the STKPUSH response as it can be used to query the status of that transaction using this endpoint.
+
+This will return a response resembling the one below
+
+```json
+{
+  "ResponseCode": "0",
+  "ResponseDescription": "The service request has been accepted successfully",
+  "MerchantRequestID": "22205-34066-1",
+  "CheckoutRequestID": "ws_CO_13012021093521236557",
+  "ResultCode": "0",
+  "ResultDesc": "The service request is processed successfully."
+}
+```
+
 ## Register C2B Urls
 
 This API enables you to register the callback URLs through which you can receive payload for payments to your paybill/till number. It is useful especially if you need your application to perform a task after payment has been made to your paybill/till number.

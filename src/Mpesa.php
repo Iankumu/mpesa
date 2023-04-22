@@ -4,7 +4,6 @@ namespace Iankumu\Mpesa;
 
 use Iankumu\Mpesa\Exceptions\CallbackException;
 use Iankumu\Mpesa\Utils\MpesaHelper;
-use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 
 class Mpesa
