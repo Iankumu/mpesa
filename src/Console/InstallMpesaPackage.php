@@ -17,7 +17,7 @@ class InstallMpesaPackage extends Command
 
         $this->info('Publishing configuration...');
 
-        if (!$this->configExists('mpesa.php')) {
+        if (! $this->configExists('mpesa.php')) {
             $this->publishConfiguration();
             $this->info('Published configuration');
         } else {
@@ -31,7 +31,6 @@ class InstallMpesaPackage extends Command
 
         $this->info('Installed Mpesa Package');
     }
-
 
     public function configExists($fileName)
     {
@@ -50,7 +49,7 @@ class InstallMpesaPackage extends Command
     {
         $params = [
             '--provider' => "Iankumu\Mpesa\MpesaServiceProvider",
-            '--tag' => "mpesa-config"
+            '--tag' => 'mpesa-config',
         ];
 
         if ($forcePublish === true) {

@@ -1,6 +1,6 @@
 name: run-tests
 
-on: [ push, pull_request ]
+on: [push, pull_request]
 
 jobs:
   test:
@@ -8,10 +8,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest ]
-        php: [ '8.0', 8.1, 8.2 ]
-        laravel: [ 8.* , 9.*, 10.* ]
-        dependency-version: [ prefer-stable ]
+        os: [ubuntu-latest]
+        php: ["8.0", 8.1, 8.2]
+        laravel: [8.*, 9.*, 10.*]
+        dependency-version: [prefer-stable]
         include:
           - laravel: 10.*
             testbench: 8.*
@@ -25,7 +25,6 @@ jobs:
         exclude:
           - laravel: 10.*
             php: 8.0
-
 
     name: PHP ${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
@@ -52,4 +51,4 @@ jobs:
           composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
 
       - name: Execute tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/pest

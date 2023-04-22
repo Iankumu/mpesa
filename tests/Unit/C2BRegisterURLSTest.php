@@ -4,28 +4,38 @@ namespace Iankumu\Mpesa\Tests\Unit;
 
 use Iankumu\Mpesa\Exceptions\CallbackException;
 use Iankumu\Mpesa\Mpesa;
-use Iankumu\Mpesa\Tests\TestCase;
+use Illuminate\Support\Facades\Http;
 
-class C2BRegisterURLSTest extends TestCase
-{
-    /** @test */
-    public function can_register_c2b_urls()
-    {
-        $mpesa = $this->createStub(Mpesa::class);
+it('can register c2b urls', function () {
 
-        $mpesa->method('c2bregisterURLS')
-            ->with(12345)
-            ->willReturn(true);
+    $expectedResponse = [
+        'ConversationID' => 'AG_20191219_00005797af5d7d75f652',
+        'OriginatorConversationID' => '16740-34861180-1',
+        'ResponseDescription' => 'success',
+    ];
 
-        $this->assertSame(true, $mpesa->c2bregisterURLS(12345));
-    }
+    config()->set('mpesa.c2b_validation_url', 'http://test.test/validation');
+    config()->set('mpesa.c2b_confirmation_url', 'http://test.test/confrim');
 
-    /** @test */
-    public function c2b_will_throw_an_exception_when_the_callbacks_are_null()
-    {
-        $this->expectException(CallbackException::class);
+    Http::fake([
+        'https://sandbox.safaricom.co.ke/*' => Http::response($expectedResponse),
+    ]);
 
-        //Should Throw an Exception as the callback is null
-        (new Mpesa())->c2bregisterURLS(12345);
-    }
-}
+    $mpesa = new Mpesa();
+
+    $response = $mpesa->c2bregisterURLS(12345);
+
+    $recorded = Http::recorded();
+
+    [$request, $response] = $recorded[0];
+    $result = json_decode($response->body(), true);
+
+    expect($response->status())->toBe(200);
+    expect($result)->toBe($expectedResponse);
+    expect($result['ResponseDescription'])->toBe('success');
+});
+
+test('that c2b will throw an exception when the callbacks are null', function () {
+
+    (new Mpesa())->c2bregisterURLS(12345);
+})->expectException(CallbackException::class);

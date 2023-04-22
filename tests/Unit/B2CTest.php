@@ -2,31 +2,41 @@
 
 namespace Iankumu\Mpesa\Tests\Unit;
 
-use Iankumu\Mpesa\Mpesa;
-use Iankumu\Mpesa\Tests\TestCase;
 use Iankumu\Mpesa\Exceptions\CallbackException;
+use Iankumu\Mpesa\Mpesa;
+use Illuminate\Support\Facades\Http;
 
-class B2CTest extends TestCase
-{
-    /**@test */
-    public function can_initiate_b2c()
-    {
-        $mpesa = $this->createStub(Mpesa::class);
+it('can initiate b2c', function () {
 
-        $mpesa->method('b2c')
-            ->with('0707070707', 'SalaryPayment', 100, 'Salary Payment')
-            ->willReturn(true);
+    $expectedResponse = [
+        'ConversationID' => 'AG_20191219_00005797af5d7d75f652',
+        'OriginatorConversationID' => '16740-34861180-1',
+        'ResponseCode' => '0',
+        'ResponseDescription' => 'Accept the service request successfully.',
+    ];
 
-        $result = $mpesa->b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment');
-        $this->assertSame(true, $result);
-    }
+    config()->set('mpesa.b2c_result_url', 'http://test.test/result');
+    config()->set('mpesa.b2c_timeout_url', 'http://test.test/timeout');
 
-    /** @test */
-    public function b2c_will_throw_an_exception_when_the_callbacks_are_null()
-    {
-        $this->expectException(CallbackException::class);
+    Http::fake([
+        'https://sandbox.safaricom.co.ke/*' => Http::response($expectedResponse),
+    ]);
 
-        //Should Throw an Exception as the callback is null
-        (new Mpesa())->b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment');
-    }
-}
+    $mpesa = new Mpesa();
+
+    $response = $mpesa->b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment');
+
+    $recorded = Http::recorded();
+
+    [$request, $response] = $recorded[0];
+    $result = json_decode($response->body(), true);
+
+    expect($response->status())->toBe(200);
+    expect($result)->toBe($expectedResponse);
+    expect($result['ResponseCode'])->toBe('0');
+});
+
+test('that b2c will throw an exception when the callbacks are null', function () {
+
+    (new Mpesa())->b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment');
+})->expectException(CallbackException::class);

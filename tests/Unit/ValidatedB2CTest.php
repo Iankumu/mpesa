@@ -4,36 +4,40 @@ namespace Iankumu\Mpesa\Tests\Unit;
 
 use Iankumu\Mpesa\Exceptions\CallbackException;
 use Iankumu\Mpesa\Mpesa;
-use Iankumu\Mpesa\Tests\TestCase;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
-class ValidatedB2CTest extends TestCase
-{
-    //test can perform validated b2c
-    /**@test */
-    public function can_validate_b2c()
-    {
-        $mpesa = $this->createStub(Mpesa::class);
+it('can initiate validated_b2c', function () {
 
-        $mpesa->method('validated_b2c')
-            ->with('0707070707', 'SalaryPayment', 100, 'Salary Payment', '120912992') //Will take a phone number and ID Number of the person to be paid
-            ->willReturn(true);
+    $expectedResponse = [
 
-        $result = $mpesa->validated_b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment', '120912992');
-        $result->assertJsonStructure([
-            'ConversationID',
-            'OriginatorConversationID',
-            'ResponseCode',
-            'ResponseDescription',
-        ]);
-    }
+        'ConversationID' => 'AG_20190117_00004636fb3ac56655df',
+        'OriginatorConversationID' => '17503-13504109-1',
+        'ResponseCode' => '0',
+        'ResponseDescription' => 'Accept the service request successfully.',
+    ];
 
-    /** @test */
-    public function validated_b2c_will_throw_an_exception_when_the_callbacks_are_null()
-    {
-        $this->expectException(CallbackException::class);
+    Http::fake([
+        'https://sandbox.safaricom.co.ke/*' => Http::response($expectedResponse),
+    ]);
 
-        //Should Throw an Exception as the callback is null
-        (new Mpesa())->validated_b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment', '120912992');;
-    }
-}
+    config()->set('mpesa.b2c_result_url', 'http://test.test/result');
+    config()->set('mpesa.b2c_timeout_url', 'http://test.test/timeout');
+
+    $mpesa = new Mpesa();
+
+    $response = $mpesa->validated_b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment', '120912992');
+
+    $recorded = Http::recorded();
+
+    [$request, $response] = $recorded[0];
+    $result = json_decode($response->body(), true);
+
+    expect($response->status())->toBe(200);
+    expect($result)->toBe($expectedResponse);
+    expect($result['ResponseCode'])->toBe('0');
+});
+
+test('that validated_b2c will throw an exception when the callbacks are null', function () {
+
+    (new Mpesa())->validated_b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment', '120912992');
+})->expectException(CallbackException::class);

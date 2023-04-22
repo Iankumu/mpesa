@@ -3,19 +3,14 @@
 namespace Iankumu\Mpesa\Tests\Unit;
 
 use Iankumu\Mpesa\Mpesa;
-use Iankumu\Mpesa\Tests\TestCase;
 
-class GenerateSecurityCredentialTest extends TestCase
-{
+it('can generate security credential', function () {
 
+    config()->set('mpesa.initiator_password', 'test');
 
-    /** @test */
-    public function can_generate_security_credential()
-    {
+    $mpesa = new Mpesa();
 
-        $mpesa = new Mpesa();
+    $result = $mpesa->generate_security_credential();
 
-        $result = $mpesa->generate_security_credential();
-        $this->assertStringContainsString('==', $result);
-    }
-}
+    expect($result)->toContain('==');
+});
