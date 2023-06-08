@@ -12,6 +12,7 @@ The package contains implementation of the following Daraja APIs
 
 - Lipa na Mpesa Express Online(STKPUSH)
 - Business to Customer(B2C)
+- Business to Business(B2B)
 - Customer to Business(C2B)
 - Transaction status
 - Account Balance
@@ -152,6 +153,12 @@ return [
         |------------------------------------------
         */
     'reversal_timeout_url' => env('MPESA_REVERSAL_TIMEOUT_URL'),
+    /*-----------------------------------------
+        |Mpesa B2C urls
+        |------------------------------------------
+     */
+    'b2b_result_url' => env('MPESA_B2B_RESULT_URL'),
+    'b2b_timeout_url' => env('MPESA_B2B_TIMEOUT_URL'),
 ];
 
 ```
@@ -181,6 +188,7 @@ Thank you for considering contributing to Laravel Mpesa! All contributions and P
 ### Credits
 
 - [Ian Kumu](https://github.com/IanKumu)
+- [Mugwanjira Maina](https://github.com/maina401)
 - [All Contributors](../../contributors)
 
 ### License
