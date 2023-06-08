@@ -111,4 +111,8 @@ return [
         |------------------------------------------
         */
     'reversal_timeout_url' => env('MPESA_REVERSAL_TIMEOUT_URL'),
+
+    //b2b
+    'b2b_result_url' => env('MPESA_B2B_RESULT_URL'),
+    'b2b_timeout_url' => env('MPESA_B2B_TIMEOUT_URL'),
 ];

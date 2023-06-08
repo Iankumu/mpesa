@@ -98,6 +98,8 @@ class Mpesa
         $this->baltimeout = config('mpesa.balance_timeout_url');
         $this->reverseresult = config('mpesa.reversal_result_url');
         $this->reversetimeout = config('mpesa.reversal_timeout_url');
+        $this->b2b_result_url = config('mpesa.b2b_result_url');
+        $this->b2b_timeout_url = config('mpesa.b2b_timeout_url');
         $this->url = config('mpesa.environment') == 'sandbox'
             ? 'https://sandbox.safaricom.co.ke'
             : 'https://api.safaricom.co.ke';
@@ -278,6 +280,51 @@ class Mpesa
         }
 
         return $this->MpesaRequest($url, $body);
+    }
+
+    /**
+     * Business to Business
+     *
+     * This method is used to send money to a business's Mpesa account.
+     *
+     * @param int $amount The amount to send to the recipient
+     * @param int $receiver_shortcode The shortcode of the recipient
+     * @param string $command_id The type of transaction being made. Can be BusinessPayBill, MerchantToMerchantTransfer, MerchantTransferFromMerchantToWorking, MerchantServicesMMFAccountTransfer, AgencyFloatAdvance
+     * @param string $remarks Any additional information. Must be present.
+     * @param string $account_number Required for “BusinessPaybill” CommandID.
+     * @return object Curl Response from Mpesa
+     */
+    public function b2b($receiver_shortcode, $command_id, $amount, $remarks, $account_number=null)
+    {
+        $url = $this->url . "/mpesa/b2b/v1/paymentrequest";
+
+        $body = [
+            "Initiator" => $this->initiator_name,
+            "SecurityCredential" => $this->security_credential,
+            "CommandID" => $command_id, //can be BusinessPayBill, MerchantToMerchantTransfer, MerchantTransferFromMerchantToWorking, MerchantServicesMMFAccountTransfer, AgencyFloatAdvance
+            "SenderIdentifierType" => '4', //4 for shortcode
+            "RecieverIdentifierType" => '4', //4 for shortcode
+            "Amount" => $amount,
+            "PartyA" => $this->b2c_shortcode,//uses same shortcode as b2c
+            "PartyB" => $receiver_shortcode,
+            "AccountReference" => $account_number,
+            "Remarks" => $remarks
+        ];
+        if ($command_id == 'BusinessPayBill') {
+            if ($account_number == null)
+                throw new \Exception("Account Number is required for BusinessPayBill CommandID");
+
+               $body['AccountReference'] = $account_number;
+        }
+        //check urls
+        if (!filter_var($this->b2b_result_url, FILTER_VALIDATE_URL))
+            throw new CallbackException("Result URL is not valid");
+        if (!filter_var($this->b2b_timeout_url, FILTER_VALIDATE_URL))
+            throw new CallbackException("Timeout URL is not valid");
+        $body['QueueTimeOutURL'] = $this->b2b_timeout_url;
+        $body['ResultURL'] = $this->b2b_result_url;
+        $response = $this->MpesaRequest($url, $body);
+        return $response;
     }
 
     /**
