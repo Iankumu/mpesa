@@ -12,6 +12,7 @@ The package contains implementation of the following Daraja APIs
 
 - Lipa na Mpesa Express Online(STKPUSH)
 - Business to Customer(B2C)
+- Business to Business(B2B)
 - Customer to Business(C2B)
 - Transaction status
 - Account Balance
@@ -181,6 +182,7 @@ Thank you for considering contributing to Laravel Mpesa! All contributions and P
 ### Credits
 
 - [Ian Kumu](https://github.com/IanKumu)
+- [Mugwanjira Maina](https://github.com/maina401)
 - [All Contributors](../../contributors)
 
 ### License
