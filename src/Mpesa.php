@@ -68,6 +68,10 @@ class Mpesa
 
     public $stkcallback;
 
+    public $b2b_result_url;
+
+    public $b2b_timeout_url;
+
     /**
      * The Base URL
      *
@@ -117,7 +121,7 @@ class Mpesa
      */
     public function stkpush($phonenumber, $amount, $account_number, $callbackurl = null)
     {
-        $url = $this->url.'/mpesa/stkpush/v1/processrequest';
+        $url = $this->url . '/mpesa/stkpush/v1/processrequest';
         $data = [
             //Fill in the request parameters with valid values
             'BusinessShortCode' => $this->shortcode, //Has to be a paybill and not a till number since it is not supported
@@ -133,15 +137,15 @@ class Mpesa
         ];
 
         //url should be https and should not contain keywords such as mpesa,safaricom etc
-        if (! is_null($callbackurl) && is_null($this->stkcallback)) {
+        if (!is_null($callbackurl) && is_null($this->stkcallback)) {
             $data += [
                 'CallBackURL' => $callbackurl,
             ];
-        } elseif (is_null($callbackurl) && ! is_null($this->stkcallback)) {
+        } elseif (is_null($callbackurl) && !is_null($this->stkcallback)) {
             $data += [
                 'CallBackURL' => $this->stkcallback,
             ];
-        } elseif (! is_null($callbackurl) && ! is_null($this->stkcallback)) {
+        } elseif (!is_null($callbackurl) && !is_null($this->stkcallback)) {
             $data += [
                 'CallBackURL' => $callbackurl,
             ];
@@ -172,7 +176,7 @@ class Mpesa
             'CheckoutRequestID' => $checkoutRequestId,
         ];
 
-        $url = $this->url.'/mpesa/stkpushquery/v1/query';
+        $url = $this->url . '/mpesa/stkpushquery/v1/query';
 
         return $this->MpesaRequest($url, $post_data);
     }
@@ -190,7 +194,7 @@ class Mpesa
      */
     public function b2c($phonenumber, $command_id, $amount, $remarks)
     {
-        $url = $this->url.'/mpesa/b2c/v1/paymentrequest';
+        $url = $this->url . '/mpesa/b2c/v1/paymentrequest';
 
         $body = [
             'InitiatorName' => $this->initiator_name,
@@ -248,7 +252,7 @@ class Mpesa
      */
     public function validated_b2c($phonenumber, $command_id, $amount, $remarks, $id_number)
     {
-        $url = $this->url.'/mpesa/b2cvalidate/v2/paymentrequest';
+        $url = $this->url . '/mpesa/b2cvalidate/v2/paymentrequest';
         $body = [
             'InitiatorName' => $this->initiator_name,
             'SecurityCredential' => $this->security_credential,
@@ -292,9 +296,9 @@ class Mpesa
      * @param string $command_id The type of transaction being made. Can be BusinessPayBill, MerchantToMerchantTransfer, MerchantTransferFromMerchantToWorking, MerchantServicesMMFAccountTransfer, AgencyFloatAdvance
      * @param string $remarks Any additional information. Must be present.
      * @param string $account_number Required for “BusinessPaybill” CommandID.
-     * @return object Curl Response from Mpesa
+     * @return \Illuminate\Http\Client\Response
      */
-    public function b2b($receiver_shortcode, $command_id, $amount, $remarks, $account_number=null)
+    public function b2b($receiver_shortcode, $command_id, $amount, $remarks, $account_number = null)
     {
         $url = $this->url . "/mpesa/b2b/v1/paymentrequest";
 
@@ -305,7 +309,7 @@ class Mpesa
             "SenderIdentifierType" => '4', //4 for shortcode
             "RecieverIdentifierType" => '4', //4 for shortcode
             "Amount" => $amount,
-            "PartyA" => $this->b2c_shortcode,//uses same shortcode as b2c
+            "PartyA" => $this->b2c_shortcode, //uses same shortcode as b2c
             "PartyB" => $receiver_shortcode,
             "AccountReference" => $account_number,
             "Remarks" => $remarks
@@ -314,17 +318,20 @@ class Mpesa
             if ($account_number == null)
                 throw new \Exception("Account Number is required for BusinessPayBill CommandID");
 
-               $body['AccountReference'] = $account_number;
+            $body['AccountReference'] = $account_number;
         }
         //check urls
-        if (!filter_var($this->b2b_result_url, FILTER_VALIDATE_URL))
+        if (!filter_var($this->b2b_result_url, FILTER_VALIDATE_URL)) {
             throw new CallbackException("Result URL is not valid");
-        if (!filter_var($this->b2b_timeout_url, FILTER_VALIDATE_URL))
+        }
+        if (!filter_var($this->b2b_timeout_url, FILTER_VALIDATE_URL)) {
             throw new CallbackException("Timeout URL is not valid");
+        }
+
         $body['QueueTimeOutURL'] = $this->b2b_timeout_url;
         $body['ResultURL'] = $this->b2b_result_url;
-        $response = $this->MpesaRequest($url, $body);
-        return $response;
+
+        return $this->MpesaRequest($url, $body);
     }
 
     /**
@@ -338,7 +345,7 @@ class Mpesa
     public function c2bregisterURLS($shortcode)
     {
 
-        $url = $this->url.'/mpesa/c2b/v2/registerurl';
+        $url = $this->url . '/mpesa/c2b/v2/registerurl';
 
         $body = [
             'ShortCode' => $shortcode,
@@ -398,7 +405,7 @@ class Mpesa
             ];
         }
 
-        $url = $this->url.'/mpesa/c2b/v2/simulate';
+        $url = $this->url . '/mpesa/c2b/v2/simulate';
 
         return $this->MpesaRequest($url, $data);
     }
@@ -416,7 +423,7 @@ class Mpesa
      */
     public function transactionStatus($shortcode, $transactionid, $identiertype, $remarks)
     {
-        $url = $this->url.'/mpesa/transactionstatus/v1/query';
+        $url = $this->url . '/mpesa/transactionstatus/v1/query';
 
         $body = [
 
@@ -461,7 +468,7 @@ class Mpesa
      */
     public function accountBalance($shortcode, $identiertype, $remarks)
     {
-        $url = $this->url.'/mpesa/accountbalance/v1/query';
+        $url = $this->url . '/mpesa/accountbalance/v1/query';
 
         $body = [
             'Initiator' => $this->initiator_name,
@@ -504,7 +511,7 @@ class Mpesa
      */
     public function reversal($shortcode, $transactionid, $amount, $remarks)
     {
-        $url = $this->url.'/mpesa/reversal/v1/request';
+        $url = $this->url . '/mpesa/reversal/v1/request';
 
         $body = [
 
