@@ -487,3 +487,26 @@ $response = Mpesa::reversal('600981','OEI2AK4Q16', 500, 'Wrong Payment');
 $result = json_decode((string)$response);
 return $result;
 ```
+
+## B2B API
+
+This API is useful when you want to make `business to business payments`. It is, however, not publicly available in the documentation and you have to contact Safaricom and give them a valid usecase/reason on how you plan to use the API for them to give you access to the API.
+
+Before using this method, ensure you have added the `initiator_name`,`initiator_password`,`b2c_shortcode`,`b2b_result_url` and `b2b_timeout_url` configurations to the `config/mpesa.php` file.
+
+To use this API you need to call `b2b()` method on the `Mpesa` facade. This function accept the following parameters
+
+1. `receiver_shortcode` - The shortcode of the recipient
+2. `command_id` -The type of transaction being made. Can be `BusinessPayBill`, `MerchantToMerchantTransfer`, `MerchantTransferFromMerchantToWorking`, `MerchantServicesMMFAccountTransfer`, `AgencyFloatAdvance`
+3. `amount` - The amount to send to the recipient
+4. `remarks` - small decription of the payment being made.
+5. `account_number` - Required for `BusinessPaybill` CommandID
+
+```php
+use Iankumu\Mpesa\Facades\Mpesa;
+
+$response = Mpesa::b2b($receiver_shortcode, $command_id, $amount, $remarks, $account_number = null);
+
+$result = json_decode((string)$response);
+return $result;
+```
