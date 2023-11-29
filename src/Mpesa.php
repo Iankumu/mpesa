@@ -126,7 +126,7 @@ class Mpesa
             //Fill in the request parameters with valid values
             'BusinessShortCode' => $this->shortcode, //Has to be a paybill and not a till number since it is not supported
             'Password' => $this->lipaNaMpesaPassword(),
-            'Timestamp' => Carbon::rawParse('now')->format('YmdHms'),
+            'Timestamp' => Carbon::rawParse('now')->format('YmdHis'),
             'TransactionType' => 'CustomerPayBillOnline',
             'Amount' => (int) $amount,
             'PartyA' => $this->phoneValidator($phonenumber), // replace this with your phone number
@@ -172,7 +172,7 @@ class Mpesa
         $post_data = [
             'BusinessShortCode' => $this->shortcode,
             'Password' => $this->lipaNaMpesaPassword(),
-            'Timestamp' => Carbon::rawParse('now')->format('YmdHms'),
+            'Timestamp' => Carbon::rawParse('now')->format('YmdHis'),
             'CheckoutRequestID' => $checkoutRequestId,
         ];
 
@@ -264,7 +264,7 @@ class Mpesa
             'QueueTimeOutURL' => $this->b2ctimeout,
             'ResultURL' => $this->b2cresult,
             'Occassion' => '', //can be null
-            'OriginatorConversationID' => Carbon::rawParse('now')->format('YmdHms'), //unique id for the transaction
+            'OriginatorConversationID' => Carbon::rawParse('now')->format('YmdHis'), //unique id for the transaction
             'IDType' => '01', //01 for national id
             'IDNumber' => $id_number,
         ];
