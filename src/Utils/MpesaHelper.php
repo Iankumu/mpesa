@@ -29,7 +29,7 @@ trait MpesaHelper
         $consumer_key = config('mpesa.mpesa_consumer_key');
         $consumer_secret = config('mpesa.mpesa_consumer_secret');
 
-        $url = $this->url.'/oauth/v1/generate?grant_type=client_credentials';
+        $url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
 
         $response = Http::withBasicAuth($consumer_key, $consumer_secret)
             ->get($url);
@@ -53,9 +53,9 @@ trait MpesaHelper
     // Generate a base64  password using the Safaricom PassKey and the Business ShortCode to be used in the Mpesa Transaction
     public function LipaNaMpesaPassword()
     {
-        $timestamp = Carbon::rawParse('now')->format('YmdHms');
+        $timestamp = Carbon::rawParse('now')->format('YmdHis');
 
-        return base64_encode(config('mpesa.shortcode').config('mpesa.passkey').$timestamp);
+        return base64_encode(config('mpesa.shortcode') . config('mpesa.passkey') . $timestamp);
     }
 
     public function phoneValidator($phoneno)
@@ -71,9 +71,9 @@ trait MpesaHelper
     public function generate_security_credential()
     {
         if (config('mpesa.environment') == 'sandbox') {
-            $pubkey = File::get(__DIR__.'/../certificates/SandboxCertificate.cer');
+            $pubkey = File::get(__DIR__ . '/../certificates/SandboxCertificate.cer');
         } else {
-            $pubkey = File::get(__DIR__.'/../certificates/ProductionCertificate.cer');
+            $pubkey = File::get(__DIR__ . '/../certificates/ProductionCertificate.cer');
         }
         openssl_public_encrypt(config('mpesa.initiator_password'), $output, $pubkey, OPENSSL_PKCS1_PADDING);
 
