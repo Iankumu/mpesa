@@ -47,7 +47,7 @@ trait MpesaHelper
             ->acceptJson()
             ->post($url, $body);
 
-        return $response;
+        return $response->json();
     }
 
     // Generate a base64  password using the Safaricom PassKey and the Business ShortCode to be used in the Mpesa Transaction
