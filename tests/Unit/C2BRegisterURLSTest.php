@@ -25,10 +25,8 @@ it('can register c2b urls', function () {
 
     $response = $mpesa->c2bregisterURLS(12345);
 
-    $recorded = Http::recorded();
-
-    [$request, $response] = $recorded[0];
-    $result = json_decode($response->body(), true);
+    // $result = json_decode($response->body(), true);
+    $result = $response->json();
 
     expect($response->status())->toBe(200);
     expect($result)->toBe($expectedResponse);

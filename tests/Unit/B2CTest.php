@@ -26,10 +26,9 @@ it('can initiate b2c', function () {
 
     $response = $mpesa->b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment');
 
-    $recorded = Http::recorded();
+    // $result = json_decode($response->body(), true);
 
-    [$request, $response] = $recorded[0];
-    $result = json_decode($response->body(), true);
+    $result = $response->json();
 
     expect($response->status())->toBe(200);
     expect($result)->toBe($expectedResponse);

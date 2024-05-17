@@ -7,7 +7,7 @@ use Iankumu\Mpesa\Mpesa;
 use Illuminate\Support\Facades\Http;
 
 test('that b2b will throw an exception when the callbacks are null', function () {
-    (new Mpesa())->b2b('403043','BusinessPayBill',100,'test','test');
+    (new Mpesa())->b2b('403043', 'BusinessPayBill', 100, 'test', 'test');
 })->expectException(CallbackException::class);
 
 it('can initiate b2b', function () {
@@ -24,9 +24,12 @@ it('can initiate b2b', function () {
     ]);
 
     $mpesa = new Mpesa();
-    $response = $mpesa->b2b('403043','BusinessPayBill',100,'test','test');
+    $response = $mpesa->b2b('403043', 'BusinessPayBill', 100, 'test', 'test');
+
+    // $result = json_decode($response->body(), true);
+    $result = $response->json();
+
     expect($response->status())->toBe(200);
-    $result = json_decode($response->body(), true);
     expect($result)->toHaveKeys(['ResponseCode', 'ResponseDescription', 'ConversationID', 'OriginatorConversationID', 'TransactionID']);
     expect($result['ResponseCode'])->toBe('0');
 });
