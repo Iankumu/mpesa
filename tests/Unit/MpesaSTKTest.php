@@ -24,10 +24,9 @@ it('can initiate stkpush', function () {
 
     $response = $mpesa->stkpush('0707070707', 100, 12345, 'https://test.test/callback');
 
-    $recorded = Http::recorded();
 
-    [$request, $response] = $recorded[0];
-    $result = json_decode($response->body(), true);
+    // $result = json_decode($response->body(), true);
+    $result = $response->json();
 
     expect($response->status())->toBe(200);
     expect($result)->toBe($expectedResponse);
@@ -53,9 +52,6 @@ it('can return stk query response', function () {
 
     $response = $mpesa->stkquery('ws_CO_191220191020363925');
 
-    $recorded = Http::recorded();
-
-    [$request, $response] = $recorded[0];
     $result = json_decode($response->body(), true);
 
     expect($response->status())->toBe(200);
