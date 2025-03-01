@@ -14,7 +14,7 @@ class TestCase extends Orchestra
      * @return void
     */
 
-    protected function getEnvironmentSetUp($app)
+    protected function defineEnvironment($app)
     {
         // Alter the testing mpesa environment
         $app['config']->set('mpesa.environment', 'sandbox');
