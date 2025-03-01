@@ -2,6 +2,7 @@
 
 namespace Iankumu\Mpesa\Utils;
 
+use Iankumu\Mpesa\Exceptions\CallbackException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
@@ -25,9 +26,9 @@ trait MpesaHelper
 
     // Generate an AccessToken using the Consumer Key and Consumer Secret
     public function generateAccessToken()
-    {
-        $consumer_key = config('mpesa.mpesa_consumer_key');
-        $consumer_secret = config('mpesa.mpesa_consumer_secret');
+    {   
+        $consumer_key = $this->getConfig('mpesa_consumer_key');
+        $consumer_secret = $this->getConfig('mpesa_consumer_secret');
 
         $url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
 
@@ -53,9 +54,8 @@ trait MpesaHelper
     // Generate a base64  password using the Safaricom PassKey and the Business ShortCode to be used in the Mpesa Transaction
     public function LipaNaMpesaPassword()
     {
-        $timestamp = Carbon::rawParse('now')->format('YmdHis');
-
-        return base64_encode(config('mpesa.shortcode') . config('mpesa.passkey') . $timestamp);
+        $timestamp = $this->getFormattedTimeStamp();
+        return base64_encode($this->getConfig('shortcode') . $this->getConfig('passkey') . $timestamp);
     }
 
     public function phoneValidator($phoneno)
@@ -68,9 +68,16 @@ trait MpesaHelper
         return $phoneno;
     }
 
+    public function getFormattedTimeStamp()
+    {
+        $timestamp = Carbon::rawParse('now')->format('YmdHis');
+
+        return $timestamp;
+    }
+
     public function generate_security_credential()
     {
-        if (config('mpesa.environment') == 'sandbox') {
+        if ($this->getConfig('environment') == 'sandbox') {
             $pubkey = File::get(__DIR__ . '/../certificates/SandboxCertificate.cer');
         } else {
             $pubkey = File::get(__DIR__ . '/../certificates/ProductionCertificate.cer');
@@ -91,5 +98,28 @@ trait MpesaHelper
         $response->setContent($result);
 
         return $response;
+    }
+
+    public function getConfig($key, $default = null)
+    {
+        return config('mpesa.' . $key, $default);
+    }
+
+    public function resolveCallbackUrl($paramUrl, $configUrlKey, $exceptionMessageKey)
+    {
+        $callbacks = $this->getConfig('callbacks');
+
+        $configUrl = $callbacks[$configUrlKey] ?? null;
+
+        if ($paramUrl !== null) {
+            return $paramUrl;
+        } elseif ($configUrl !== null) {
+            return $configUrl;
+        } else {
+            throw CallbackException::make(
+                $exceptionMessageKey,
+                'Ensure you have set the ' . str_replace('_', ' ', $exceptionMessageKey) . ' in the mpesa config file or passed as a parameter'
+            );
+        }
     }
 }
