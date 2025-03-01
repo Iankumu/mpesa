@@ -88,78 +88,26 @@ return [
         */
     'b2c_shortcode' => env('MPESA_B2C_SHORTCODE'),
 
-    /*-----------------------------------------
-        |Mpesa C2B Validation url
+   /*-----------------------------------------
+        |Mpesa Callback URLS for various APIs
         |------------------------------------------
-        */
-    'c2b_validation_url' => env('MPESA_C2B_VALIDATION_URL'),
+    */
 
-    /*-----------------------------------------
-        |Mpesa C2B Confirmation url
-        |------------------------------------------
-        */
-    'c2b_confirmation_url' => env('MPESA_C2B_CONFIRMATION_URL'),
-
-    /*-----------------------------------------
-        |Mpesa B2C Result url
-        |------------------------------------------
-        */
-    'b2c_result_url' => env('MPESA_B2C_RESULT_URL'),
-
-    /*-----------------------------------------
-        |Mpesa B2C Timeout url
-        |------------------------------------------
-        */
-    'b2c_timeout_url' => env('MPESA_B2C_TIMEOUT_URL'),
-
-    /*-----------------------------------------
-        |Mpesa Lipa Na Mpesa callback url
-        |------------------------------------------
-        */
-    'callback_url' => env('MPESA_CALLBACK_URL'),
-
-    /*-----------------------------------------
-        |Mpesa Transaction Status Result url
-        |------------------------------------------
-        */
-    'status_result_url' => env('MPESA_STATUS_RESULT_URL'),
-
-    /*-----------------------------------------
-        |Mpesa Transaction Status Timeout url
-        |------------------------------------------
-        */
-    'status_timeout_url' => env('MPESA_STATUS_TIMEOUT_URL'),
-
-    /*-----------------------------------------
-        |Mpesa Account Balance Result url
-        |------------------------------------------
-        */
-    'balance_result_url' => env('MPESA_BALANCE_RESULT_URL'),
-
-    /*-----------------------------------------
-        |Mpesa Account Balance Timeout url
-        |------------------------------------------
-        */
-    'balance_timeout_url' => env('MPESA_BALANCE_TIMEOUT_URL'),
-
-    /*-----------------------------------------
-        |Mpesa Reversal Result url
-        |------------------------------------------
-        */
-    'reversal_result_url' => env('MPESA_REVERSAL_RESULT_URL'),
-
-    /*-----------------------------------------
-        |Mpesa Reversal Timeout url
-        |------------------------------------------
-        */
-    'reversal_timeout_url' => env('MPESA_REVERSAL_TIMEOUT_URL'),
-    /*-----------------------------------------
-        |Mpesa B2B urls
-        |------------------------------------------
-     */
-    'b2b_result_url' => env('MPESA_B2B_RESULT_URL'),
-
-    'b2b_timeout_url' => env('MPESA_B2B_TIMEOUT_URL'),
+    'callbacks' => [
+        'c2b_validation_url' => env('MPESA_C2B_VALIDATION_URL'),
+        'c2b_confirmation_url' => env('MPESA_C2B_CONFIRMATION_URL'),
+        'b2c_result_url' => env('MPESA_B2C_RESULT_URL'),
+        'b2c_timeout_url' => env('MPESA_B2C_TIMEOUT_URL'),
+        'callback_url' => env('MPESA_CALLBACK_URL'),
+        'status_result_url' => env('MPESA_STATUS_RESULT_URL'),
+        'status_timeout_url' => env('MPESA_STATUS_TIMEOUT_URL'),
+        'balance_result_url' => env('MPESA_BALANCE_RESULT_URL'),
+        'balance_timeout_url' => env('MPESA_BALANCE_TIMEOUT_URL'),
+        'reversal_result_url' => env('MPESA_REVERSAL_RESULT_URL'),
+        'reversal_timeout_url' => env('MPESA_REVERSAL_TIMEOUT_URL'),
+        'b2b_result_url' => env('MPESA_B2B_RESULT_URL'),
+        'b2b_timeout_url' => env('MPESA_B2B_TIMEOUT_URL'),
+    ],
 ];
 
 ```
