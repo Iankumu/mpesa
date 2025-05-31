@@ -29,20 +29,28 @@ ssh -R 80:localhost:8000 nokey@localhost.run
 
 ## STKPUSH (Lipa Na M-Pesa Online)
 
-This API enables you to initiate transactions on behalf of a client/customer. It prefills with the paybill number,account number and the amount the customer should pay. It also requires a phonenumber to which the prompt will be sent.
+This API allows you to initiate **PayBill** (`CustomerPayBillOnline`) or **Till Number** (`CustomerBuyGoodsOnline`) transactions via STK Push. It requires your shortcode (PayBill or Till), passkey, and the appropriate transaction type.
 
-To initiate the transaction, we need to call the `stkpush()` method on the `Mpesa` Facade. Before you call the method, you need to ensure you have set the `passkey` and the `shortcode` in the `config/mpesa.php` file. Failure to which the calls will not work.
+> **Note**
+>
+> - **PayBill Flow** (`CustomerPayBillOnline`) requires an `account_number` (AccountReference).
+> - **Till Number Flow** (`CustomerBuyGoodsOnline`) does **not** require an `account_number`.
 
 This method requires a few parameters:
 
 1. `phonenumber` - Phone number of the customer
 2. `amount` - Amount of money to be paid by a customer
-3. `account_number` - The account number to the paybill which will be used to identify which user paid.
+3. `account_number`(optional) - The account number to the paybill which will be used to identify which user paid.
 4. `callbackurl`(optional) - A URL where safaricom can send the response to.
+5. `transaction_type` - can either be `Mpesa::PAYBILL` for paybill transactions or `Mpesa::TILL` for till number transactions.
+
+### Paybill Example
+
+Call the `stkpush()` method on the Mpesa facade. Make sure you have set `passkey` and `shortcode` in `config/mpesa.php`. If you have already registered a callback URL in the config, you can pass `null` for` $callbackurl`.
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response=Mpesa::stkpush($phonenumber, $amount, $account_number,$callbackurl = null);
+$response=Mpesa::stkpush($phonenumber, $amount, $account_number=null,$callbackurl = null, Mpesa::PAYBILL);
 
 $result = json_decode((string)$response);
 return $result;
@@ -52,7 +60,7 @@ If you `have not` registered a `callback_url` in the `config/mpesa.php` file, yo
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response=Mpesa::stkpush('0707070707', 100, '12345');
+$response=Mpesa::stkpush('0707070707', 100, '12345',null,Mpesa::PAYBILL);
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -63,14 +71,41 @@ OR
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response=Mpesa::stkpush('0707070707', 100, '12345','https://test.test/callback');
+$response=Mpesa::stkpush('0707070707', 100, '12345','https://test.test/callback',Mpesa::PAYBILL);
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
 return $result;
 ```
 
-Upon successful urls registration you should get the following response
+### Till Number Example
+
+To initiate a `Till Number (Buy Goods)` STK Push, call `stkpush()` with `$transactionType = Mpesa::TILL`.
+Note these points:
+
+- Use a Till Number shortcode (not a PayBill shortcode).
+
+- Do not supply an accountNumber for Till flows
+
+```php
+
+use Iankumu\Mpesa\Facades\Mpesa;
+
+$response = Mpesa::stkpush(
+    $phoneNumber     = '254712345678',
+    $amount          = 50,
+    $account_number   = null,              // Must be null for TILL
+    $callbackUrl     = 'https://example.com/till-callback',
+    $transactionType = Mpesa::TILL
+);
+
+/** @var \Illuminate\Http\Client\Response $response */
+$result = $response->json();
+return $result;
+
+```
+
+You should get the following response after a successful execution
 
 ```json
 {
@@ -82,9 +117,7 @@ Upon successful urls registration you should get the following response
 }
 ```
 
-Also a promt should have been sent to the phonenumber you specified.
-
-After success you will get a callback via the `callbackurl` you provided.
+Also a promt should have been sent to the phonenumber you specified. After the customer `completes` or `cancels` the payment, Safaricom will send a response to your `$callbackUrl`:
 
 ```json
 {

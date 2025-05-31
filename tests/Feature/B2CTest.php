@@ -1,9 +1,9 @@
 <?php
 
-namespace Iankumu\Mpesa\Tests\Unit;
+namespace Iankumu\Mpesa\Tests\Feature;
 
 use Iankumu\Mpesa\Exceptions\CallbackException;
-use Iankumu\Mpesa\Mpesa;
+use Iankumu\Mpesa\Facades\Mpesa;
 use Illuminate\Support\Facades\Http;
 
 it('can initiate b2c with callbacks passed as parameters', function () {
@@ -19,9 +19,14 @@ it('can initiate b2c with callbacks passed as parameters', function () {
         'https://sandbox.safaricom.co.ke/*' => Http::response($expectedResponse),
     ]);
 
-    $mpesa = new Mpesa();
-
-    $response = $mpesa->b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment', 'http://test.test/result', 'http://test.test/timeout');
+    $response = Mpesa::b2c(
+        '0707070707',
+        'SalaryPayment',
+        100,
+        'Salary Payment',
+        'http://test.test/result',
+        'http://test.test/timeout'
+    );
 
     // $result = json_decode($response->body(), true);
 
@@ -48,9 +53,12 @@ it('can initiate b2c with callbacks set as configurations', function () {
         'https://sandbox.safaricom.co.ke/*' => Http::response($expectedResponse),
     ]);
 
-    $mpesa = new Mpesa();
-
-    $response = $mpesa->b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment');
+    $response = Mpesa::b2c(
+        '0707070707',
+        'SalaryPayment',
+        100,
+        'Salary Payment'
+    );
 
     // $result = json_decode($response->body(), true);
 
@@ -63,5 +71,12 @@ it('can initiate b2c with callbacks set as configurations', function () {
 
 test('that b2c will throw an exception when the callbacks are null', function () {
 
-    (new Mpesa())->b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment', null, null);
+    Mpesa::b2c(
+        '0707070707',
+        'SalaryPayment',
+        100,
+        'Salary Payment',
+        null,
+        null
+    );
 })->expectException(CallbackException::class);

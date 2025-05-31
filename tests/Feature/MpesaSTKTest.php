@@ -1,10 +1,10 @@
 <?php
 
-namespace Iankumu\Mpesa\Tests\Unit;
+namespace Iankumu\Mpesa\Tests\Feature;
 
 use Iankumu\Mpesa\Exceptions\CallbackException;
-use Iankumu\Mpesa\Mpesa;
 use Illuminate\Support\Facades\Http;
+use Iankumu\Mpesa\Facades\Mpesa;
 
 it('can initiate stkpush with callbacks passed as parameters', function () {
 
@@ -17,13 +17,16 @@ it('can initiate stkpush with callbacks passed as parameters', function () {
     ];
 
     Http::fake([
-        'https://sandbox.safaricom.co.ke/*' => Http::response($expectedResponse),
+        'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest' => Http::response($expectedResponse),
     ]);
 
-    $mpesa = new Mpesa();
-
-    $response = $mpesa->stkpush('0707070707', 100, 12345, 'https://test.test/callback');
-
+    $response = Mpesa::stkpush(
+        '0707070707',
+        100,
+        12345,
+        'https://test.test/callback',
+        Mpesa::PAYBILL
+    );
 
     // $result = json_decode($response->body(), true);
     $result = $response->json();
@@ -44,15 +47,20 @@ it('can initiate stkpush with callbacks set as configurations', function () {
     ];
 
     Http::fake([
-        'https://sandbox.safaricom.co.ke/*' => Http::response($expectedResponse),
+        'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest' => Http::response($expectedResponse),
     ]);
 
     config()->set('mpesa.callbacks.callback_url', 'https://test.test/callback');
 
-    $mpesa = new Mpesa();
 
-    $response = $mpesa->stkpush('0707070707', 100, 12345);
 
+    $response = Mpesa::stkpush(
+        '0707070707',
+        100,
+        12345,
+        null,
+        Mpesa::PAYBILL
+    );
 
     // $result = json_decode($response->body(), true);
     $result = $response->json();
@@ -77,9 +85,8 @@ it('can return stk query response', function () {
         'https://sandbox.safaricom.co.ke/*' => Http::response($expectedResponse),
     ]);
 
-    $mpesa = new Mpesa();
 
-    $response = $mpesa->stkquery('ws_CO_191220191020363925');
+    $response = Mpesa::stkquery('ws_CO_191220191020363925');
 
     $result = json_decode($response->body(), true);
 
@@ -90,5 +97,39 @@ it('can return stk query response', function () {
 
 test('that stkpush will throw an exception when the callbacks are null', function () {
 
-    (new Mpesa())->stkpush('0707070707', 100, 12345, null);
+    Mpesa::stkpush('0707070707', 100, 12345, null);
 })->expectException(CallbackException::class);
+
+
+it('can initiate stkpush for till numbers', function () {
+    $expectedResponse = [
+        'MerchantRequestID'   => '29115-34620561-1',
+        'CheckoutRequestID'   => 'ws_CO_191220191020363925',
+        'ResponseCode'        => '0',
+        'ResponseDescription' => 'Success. Request accepted for processing',
+        'CustomerMessage'     => 'Success. Request accepted for processing',
+    ];
+
+    // 1. Fake the HTTP endpoint
+    Http::fake([
+        'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+        => Http::response($expectedResponse, 200),
+    ]);
+
+    /** @var \Illuminate\Http\Client\Response $response */
+    $response = Mpesa::stkpush(
+        '0707070707',
+        100,
+        null,
+        'https://test.test/callback',
+        Mpesa::TILL
+    );
+
+    $result = json_decode($response->body(), true);
+
+    expect($response->json())->toEqual($expectedResponse);
+
+    expect($response->status())->toBe(200);
+    expect($result)->toBe($expectedResponse);
+    expect($result['ResponseCode'])->toBe('0');
+});

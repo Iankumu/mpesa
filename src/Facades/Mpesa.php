@@ -4,8 +4,10 @@ namespace Iankumu\Mpesa\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+
+
 /**
- * @method static \Illuminate\Http\Client\Response stkpush(int $phonenumber, int $amount, string $account_number, string|null $callbackurl = null)
+ * @method static \Illuminate\Http\Client\Response stkpush(int $phonenumber, int $amount, string|null $account_number, string|null $callbackurl = null, string $transactionType)
  * @method static \Illuminate\Http\Client\Response stkquery(string $checkoutRequestId)
  * @method static \Illuminate\Http\Client\Response b2c(int $phonenumber, string $command_id, int $amount, string $remarks, string|null $result_url = null, string|null $timeout_url = null)
  * @method static \Illuminate\Http\Client\Response b2b(int $receiver_shortcode, string $command_id, int $amount, string $remarks, string|null $account_number = null, string|null $b2b_result_url = null, string|null $b2b_timeout_url = null)
@@ -21,6 +23,9 @@ use Illuminate\Support\Facades\Facade;
  */
 class Mpesa extends Facade
 {
+    public const PAYBILL = \Iankumu\Mpesa\Mpesa::PAYBILL;
+    public const TILL    = \Iankumu\Mpesa\Mpesa::TILL;
+
     /**
      * Get the registered name of the component.
      *

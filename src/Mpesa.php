@@ -2,12 +2,15 @@
 
 namespace Iankumu\Mpesa;
 
-use Iankumu\Mpesa\Exceptions\CallbackException;
 use Iankumu\Mpesa\Utils\MpesaHelper;
 
 class Mpesa
 {
     use MpesaHelper;
+
+    const PAYBILL = 'CustomerPayBillOnline';
+    const TILL    = 'CustomerBuyGoodsOnline';
+
 
     /**
      * The encrypted API credentials
@@ -65,26 +68,43 @@ class Mpesa
      *
      * @param int $phonenumber The phone number that will receive the stkpush prompt in the format 254xxxxxxxxx
      * @param int $amount The amount to be transacted
-     * @param string $account_number The account number for a paybill
+     * @param string|null $account_number The account number for a paybill
      * @param string|null $callbackurl The callback url for Mpesa Express
+     * @param string $transactionType The type of transaction. Can be CustomerPayBillOnline or CustomerBuyGoodsOnline
      * @return \Illuminate\Http\Client\Response
      */
-    public function stkpush($phonenumber, $amount, $account_number, $callbackurl = null)
+    public function stkpush($phonenumber, $amount, $account_number = null, $callbackurl = null, $transactionType = self::PAYBILL)
     {
+
+        if ($transactionType === self::PAYBILL && empty($account_number)) {
+            throw new \InvalidArgumentException('Account number is required for Pay Bill transactions.');
+        }
+
+        $validTypes = [self::PAYBILL, self::TILL];
+        if (! in_array($transactionType, $validTypes, true)) {
+            throw new \InvalidArgumentException(
+                "Invalid transaction type: {$transactionType}. " .
+                    "Use Mpesa::PAYBILL or Mpesa::TILL."
+            );
+        }
+
         $url = $this->url . '/mpesa/stkpush/v1/processrequest';
         $data = [
-            'BusinessShortCode' => $this->shortcode, //Has to be a paybill and not a till number since it is not supported
+            'BusinessShortCode' => $this->shortcode, //Can be a paybill or till number
             'Password' => $this->LipaNaMpesaPassword(),
             'Timestamp' => $this->getFormattedTimeStamp(),
-            'TransactionType' => 'CustomerPayBillOnline',
             'Amount' => (int) $amount,
             'PartyA' => $this->phoneValidator($phonenumber), // replace this with your phone number
             'PartyB' => $this->shortcode,
+            'TransactionType' => $transactionType, //Can be CustomerPayBillOnline or CustomerBuyGoodsOnline
             'PhoneNumber' => $this->phoneValidator($phonenumber), // replace this with your phone number
-            'AccountReference' => $account_number, //Account Number for a paybill..Maximum of 12 Characters.
             'TransactionDesc' => 'Payment', //Maximum of 13 Characters.
             'CallBackURL' => $this->resolveCallbackUrl($callbackurl, 'callback_url', 'callback_url'),
         ];
+
+        if ($transactionType === self::PAYBILL) {
+            $data['AccountReference'] = $account_number; //Account Number for a paybill..Maximum of 12 Characters.
+        }
 
         return $this->MpesaRequest($url, $data);
     }

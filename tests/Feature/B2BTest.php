@@ -1,13 +1,19 @@
 <?php
 
-namespace Iankumu\Mpesa\Tests\Unit;
+namespace Iankumu\Mpesa\Tests\Feature;
 
 use Iankumu\Mpesa\Exceptions\CallbackException;
-use Iankumu\Mpesa\Mpesa;
+use Iankumu\Mpesa\Facades\Mpesa;
 use Illuminate\Support\Facades\Http;
 
 test('that b2b will throw an exception when the callbacks are null', function () {
-    (new Mpesa())->b2b('403043', 'BusinessPayBill', 100, 'test', 'test');
+    Mpesa::b2b(
+        '403043',
+        'BusinessPayBill',
+        100,
+        'test',
+        'test'
+    );
 })->expectException(CallbackException::class);
 
 it('can initiate b2b with callbacks passed as parameters', function () {
@@ -22,8 +28,16 @@ it('can initiate b2b with callbacks passed as parameters', function () {
         ], 200),
     ]);
 
-    $mpesa = new Mpesa();
-    $response = $mpesa->b2b('403043', 'BusinessPayBill', 100, 'test', 'test', 'http://test.test/result', 'http://test.test/timeout');
+
+    $response = Mpesa::b2b(
+        '403043',
+        'BusinessPayBill',
+        100,
+        'test',
+        'test',
+        'http://test.test/result',
+        'http://test.test/timeout'
+    );
 
     // $result = json_decode($response->body(), true);
     $result = $response->json();
@@ -48,8 +62,14 @@ it('can initiate b2b with callbacks set as configurations', function () {
     config()->set('mpesa.callbacks.b2b_result_url', 'http://test.test/result');
     config()->set('mpesa.callbacks.b2b_timeout_url', 'http://test.test/timeout');
 
-    $mpesa = new Mpesa();
-    $response = $mpesa->b2b('403043', 'BusinessPayBill', 100, 'test', 'test');
+
+    $response = Mpesa::b2b(
+        '403043',
+        'BusinessPayBill',
+        100,
+        'test',
+        'test'
+    );
 
     // $result = json_decode($response->body(), true);
     $result = $response->json();

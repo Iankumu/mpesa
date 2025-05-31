@@ -1,9 +1,9 @@
 <?php
 
-namespace Iankumu\Mpesa\Tests\Unit;
+namespace Iankumu\Mpesa\Tests\Feature;
 
 use Iankumu\Mpesa\Exceptions\CallbackException;
-use Iankumu\Mpesa\Mpesa;
+use Iankumu\Mpesa\Facades\Mpesa;
 use Illuminate\Support\Facades\Http;
 
 it('can initiate validated_b2c with callbacks passed as parameters', function () {
@@ -23,9 +23,17 @@ it('can initiate validated_b2c with callbacks passed as parameters', function ()
     // config()->set('mpesa.b2c_result_url', 'http://test.test/result');
     // config()->set('mpesa.b2c_timeout_url', 'http://test.test/timeout');
 
-    $mpesa = new Mpesa();
 
-    $response = $mpesa->validated_b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment', '120912992', 'http://test.test/result', 'http://test.test/timeout');
+
+    $response = Mpesa::validated_b2c(
+        '0707070707',
+        'SalaryPayment',
+        100,
+        'Salary Payment',
+        '120912992',
+        'http://test.test/result',
+        'http://test.test/timeout'
+    );
 
     // $result = json_decode($response->body(), true);
     $result = $response->json();
@@ -52,9 +60,14 @@ it('can initiate validated_b2c with callbacks set as configurations', function (
     config()->set('mpesa.callbacks.b2c_result_url', 'http://test.test/result');
     config()->set('mpesa.callbacks.b2c_timeout_url', 'http://test.test/timeout');
 
-    $mpesa = new Mpesa();
 
-    $response = $mpesa->validated_b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment', '120912992');
+    $response = Mpesa::validated_b2c(
+        '0707070707',
+        'SalaryPayment',
+        100,
+        'Salary Payment',
+        '120912992'
+    );
 
     // $result = json_decode($response->body(), true);
     $result = $response->json();
@@ -66,5 +79,13 @@ it('can initiate validated_b2c with callbacks set as configurations', function (
 
 test('that validated_b2c will throw an exception when the callbacks are null', function () {
 
-    (new Mpesa())->validated_b2c('0707070707', 'SalaryPayment', 100, 'Salary Payment', '120912992', null, null);
+    Mpesa::validated_b2c(
+        '0707070707',
+        'SalaryPayment',
+        100,
+        'Salary Payment',
+        '120912992',
+        null,
+        null
+    );
 })->expectException(CallbackException::class);
