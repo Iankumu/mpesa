@@ -26,7 +26,7 @@ trait MpesaHelper
 
     // Generate an AccessToken using the Consumer Key and Consumer Secret
     public function generateAccessToken()
-    {   
+    {
         $consumer_key = $this->getConfig('mpesa_consumer_key');
         $consumer_secret = $this->getConfig('mpesa_consumer_secret');
 
@@ -82,7 +82,7 @@ trait MpesaHelper
         } else {
             $pubkey = File::get(__DIR__ . '/../certificates/ProductionCertificate.cer');
         }
-        openssl_public_encrypt(config('mpesa.initiator_password'), $output, $pubkey, OPENSSL_PKCS1_PADDING);
+        openssl_public_encrypt($this->getConfig('initiator_password'), $output, $pubkey, OPENSSL_PKCS1_PADDING);
 
         return base64_encode($output);
     }

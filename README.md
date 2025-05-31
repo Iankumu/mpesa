@@ -3,10 +3,10 @@
 # Mpesa Package for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/Iankumu/mpesa.svg?style=flat-square)](https://packagist.org/packages/Iankumu/mpesa)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/Iankumu/mpesa/ci.yml?branch=main&label=tests&style=flat-square)](https://github.com/Iankumu/mpesa/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/iankumu/mpesa/ci.yml?logo=github&label=Tests)](https://github.com/Iankumu/mpesa/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/Iankumu/mpesa.svg?style=flat-square)](https://packagist.org/packages/Iankumu/mpesa)
 
-A Laravel package for the [Mpesa Daraja Apis](https://developer.safaricom.co.ke/APIs).This package allows you to integrate the Mpesa Daraja Apis into your Laravel Application with ease.
+A Laravel wrapper for the [Mpesa Daraja Apis](https://developer.safaricom.co.ke/APIs).This package allows you to integrate the Mpesa Daraja Apis into your Laravel Application with ease.
 
 The package contains implementation of the following Daraja APIs
 
@@ -65,7 +65,7 @@ return [
     'passkey' => env('SAFARICOM_PASSKEY', 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'),
 
     /*-----------------------------------------
-        |The Lipa na Mpesa Online ShortCode
+        |The Lipa na Mpesa Online ShortCode (Paybill or Till Number)
         |------------------------------------------
         */
     'shortcode' => env('MPESA_BUSINESS_SHORTCODE', '174379'),

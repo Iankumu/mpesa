@@ -1,6 +1,6 @@
 # Upgrade Guide
 
-## Upgrading from 1.* to 2.0.0
+## Upgrading from 1.* to 2.*
 
 Version 2.0 of the package introduces significant changes, focused on consolidating configuration and dropping support for older PHP and Laravel versions. Please carefully follow these instructions to upgrade your application.
 
@@ -8,10 +8,13 @@ Version 2.0 of the package introduces significant changes, focused on consolidat
 
 **1. Consolidated Callback Configuration:**
     Individual callback URL properties (e.g., MPESA_CALLBACK_URL, MPESA_B2C_RESULT_URL) have been replaced with a single `mpesa.callbacks` array in `config/mpesa.php`.
+
 **2. Dropped PHP 8.0 and 8.1 Support:**
-    The package now requires PHP 8.2 or 8.3.
+    The package now requires PHP 8.2 or greater.
+
 **3. Dropped Laravel 8 and 9 Support:**
     The package now supports Laravel 10, 11, and 12.
+
 **4. Passing Callback URLs as Parameters**
 
 ### Passing Callback URLs as Parameters
