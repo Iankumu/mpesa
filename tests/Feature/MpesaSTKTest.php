@@ -3,7 +3,6 @@
 namespace Iankumu\Mpesa\Tests\Feature;
 
 use Iankumu\Mpesa\Exceptions\CallbackException;
-use Iankumu\Mpesa\Mpesa as MpesaService;
 use Illuminate\Support\Facades\Http;
 use Iankumu\Mpesa\Facades\Mpesa;
 
@@ -26,7 +25,7 @@ it('can initiate stkpush with callbacks passed as parameters', function () {
         100,
         12345,
         'https://test.test/callback',
-        MpesaService::PAYBILL
+        Mpesa::PAYBILL
     );
 
     // $result = json_decode($response->body(), true);
@@ -60,7 +59,7 @@ it('can initiate stkpush with callbacks set as configurations', function () {
         100,
         12345,
         null,
-        MpesaService::PAYBILL
+        Mpesa::PAYBILL
     );
 
     // $result = json_decode($response->body(), true);
@@ -123,7 +122,7 @@ it('can initiate stkpush for till numbers', function () {
         100,
         null,
         'https://test.test/callback',
-        MpesaService::TILL
+        Mpesa::TILL
     );
 
     $result = json_decode($response->body(), true);

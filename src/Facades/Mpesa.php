@@ -4,6 +4,8 @@ namespace Iankumu\Mpesa\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+
+
 /**
  * @method static \Illuminate\Http\Client\Response stkpush(int $phonenumber, int $amount, string|null $account_number, string|null $callbackurl = null, string $transactionType)
  * @method static \Illuminate\Http\Client\Response stkquery(string $checkoutRequestId)
@@ -21,6 +23,9 @@ use Illuminate\Support\Facades\Facade;
  */
 class Mpesa extends Facade
 {
+    public const PAYBILL = \Iankumu\Mpesa\Mpesa::PAYBILL;
+    public const TILL    = \Iankumu\Mpesa\Mpesa::TILL;
+
     /**
      * Get the registered name of the component.
      *
