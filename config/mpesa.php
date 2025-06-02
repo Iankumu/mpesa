@@ -23,10 +23,16 @@ return [
     'passkey' => env('SAFARICOM_PASSKEY', 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'),
 
     /*--------------------------------------------------------------
-        |The Lipa na Mpesa Online ShortCode (Paybill or Till Number)
+        |The Lipa na Mpesa Online ShortCode (Paybill Number)
         |-----------------------------------------------------------
     */
     'shortcode' => env('MPESA_BUSINESS_SHORTCODE', '174379'),
+
+    /*--------------------------------------------------------------
+        |The Lipa na Mpesa Online ShortCode  (Till Number)
+        |-----------------------------------------------------------
+    */
+    'till_number' => env('MPESA_BUY_GOODS_TILL', '174379'),
 
     /*-----------------------------------------
         |The Mpesa Initator Name
