@@ -80,11 +80,10 @@ return $result;
 
 ### Till Number Example
 
-To initiate a `Till Number (Buy Goods)` STK Push, call `stkpush()` with `$transactionType = Mpesa::TILL`.
+To initiate a `Till Number (Buy Goods)` STK Push, call `stkpush()` with `$transactionType = Mpesa::TILL` and ensure you set a till number in `config/mpesa.php`.
 Note these points:
 
 - Use a Till Number shortcode (not a PayBill shortcode).
-
 - Do not supply an accountNumber for Till flows
 
 ```php

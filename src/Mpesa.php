@@ -27,6 +27,13 @@ class Mpesa
     public $shortcode;
 
     /**
+     * The Lipa Na MPesa till number
+     *
+     * @var int
+     */
+    public $till_number;
+
+    /**
      * The Mpesa B2C shortcode
      *
      * @var int
@@ -57,6 +64,7 @@ class Mpesa
 
         $this->security_credential = $this->generate_security_credential();
         $this->shortcode = $this->getConfig('shortcode');
+        $this->till_number = $this->getConfig('till_number');
         $this->initiator_name = $this->getConfig('initiator_name');
         $this->b2c_shortcode = $this->getConfig('b2c_shortcode');
     }
@@ -76,16 +84,20 @@ class Mpesa
     public function stkpush($phonenumber, $amount, $account_number = null, $callbackurl = null, $transactionType = self::PAYBILL)
     {
 
-        if ($transactionType === self::PAYBILL && empty($account_number)) {
-            throw new \InvalidArgumentException('Account number is required for Pay Bill transactions.');
-        }
-
         $validTypes = [self::PAYBILL, self::TILL];
         if (! in_array($transactionType, $validTypes, true)) {
             throw new \InvalidArgumentException(
                 "Invalid transaction type: {$transactionType}. " .
                     "Use Mpesa::PAYBILL or Mpesa::TILL."
             );
+        }
+
+        if ($transactionType === self::PAYBILL && empty($account_number)) {
+            throw new \InvalidArgumentException('Account number is required for Pay Bill transactions.');
+        }
+
+        if ($transactionType === self::TILL && (empty($this->till_number) || is_null($this->till_number))) {
+            throw new \InvalidArgumentException('Till number is required for Buy Goods transactions.');
         }
 
         $url = $this->url . '/mpesa/stkpush/v1/processrequest';
@@ -95,7 +107,7 @@ class Mpesa
             'Timestamp' => $this->getFormattedTimeStamp(),
             'Amount' => (int) $amount,
             'PartyA' => $this->phoneValidator($phonenumber), // replace this with your phone number
-            'PartyB' => $this->shortcode,
+            'PartyB' => $transactionType == self::PAYBILL ? $this->shortcode : $this->till_number, //Can be a paybill or till number
             'TransactionType' => $transactionType, //Can be CustomerPayBillOnline or CustomerBuyGoodsOnline
             'PhoneNumber' => $this->phoneValidator($phonenumber), // replace this with your phone number
             'TransactionDesc' => 'Payment', //Maximum of 13 Characters.
@@ -279,7 +291,7 @@ class Mpesa
      */
     public function c2bsimulate($phonenumber, $amount, $shortcode, $command_id, $account_number = null)
     {
-        if ($command_id == 'CustomerPayBillOnline') {
+        if ($command_id == self::PAYBILL) {
             //Paybill Request Body
             $data = [
                 'Msisdn' => $this->phoneValidator($phonenumber),
