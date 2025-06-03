@@ -120,7 +120,7 @@ it('can initiate stkpush for till numbers', function () {
     $response = Mpesa::stkpush(
         '0707070707',
         100,
-        null,
+        'Customer123',
         'https://test.test/callback',
         Mpesa::TILL
     );
