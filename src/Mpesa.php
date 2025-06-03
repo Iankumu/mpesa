@@ -3,6 +3,7 @@
 namespace Iankumu\Mpesa;
 
 use Iankumu\Mpesa\Utils\MpesaHelper;
+use InvalidArgumentException;
 
 class Mpesa
 {
@@ -76,28 +77,28 @@ class Mpesa
      *
      * @param int $phonenumber The phone number that will receive the stkpush prompt in the format 254xxxxxxxxx
      * @param int $amount The amount to be transacted
-     * @param string|null $account_number The account number for a paybill
+     * @param string $account_number The account number for a paybill or a reference number for a till number. Maximum of 12 Characters.
      * @param string|null $callbackurl The callback url for Mpesa Express
      * @param string $transactionType The type of transaction. Can be CustomerPayBillOnline or CustomerBuyGoodsOnline
      * @return \Illuminate\Http\Client\Response
      */
-    public function stkpush($phonenumber, $amount, $account_number = null, $callbackurl = null, $transactionType = self::PAYBILL)
+    public function stkpush($phonenumber, $amount, $account_number, $callbackurl = null, $transactionType = self::PAYBILL)
     {
 
         $validTypes = [self::PAYBILL, self::TILL];
         if (! in_array($transactionType, $validTypes, true)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "Invalid transaction type: {$transactionType}. " .
                     "Use Mpesa::PAYBILL or Mpesa::TILL."
             );
         }
 
-        if ($transactionType === self::PAYBILL && empty($account_number)) {
-            throw new \InvalidArgumentException('Account number is required for Pay Bill transactions.');
+        if (empty($account_number)) {
+            throw new InvalidArgumentException('An Account Reference is required for All transactions.');
         }
 
         if ($transactionType === self::TILL && (empty($this->till_number) || is_null($this->till_number))) {
-            throw new \InvalidArgumentException('Till number is required for Buy Goods transactions.');
+            throw new InvalidArgumentException('Till number is required for Buy Goods transactions.');
         }
 
         $url = $this->url . '/mpesa/stkpush/v1/processrequest';
@@ -111,12 +112,9 @@ class Mpesa
             'TransactionType' => $transactionType, //Can be CustomerPayBillOnline or CustomerBuyGoodsOnline
             'PhoneNumber' => $this->phoneValidator($phonenumber), // replace this with your phone number
             'TransactionDesc' => 'Payment', //Maximum of 13 Characters.
+            'AccountReference' => $account_number, //Account Number. Maximum of 12 Characters.
             'CallBackURL' => $this->resolveCallbackUrl($callbackurl, 'callback_url', 'callback_url'),
         ];
-
-        if ($transactionType === self::PAYBILL) {
-            $data['AccountReference'] = $account_number; //Account Number for a paybill..Maximum of 12 Characters.
-        }
 
         return $this->MpesaRequest($url, $data);
     }

@@ -34,13 +34,13 @@ This API allows you to initiate **PayBill** (`CustomerPayBillOnline`) or **Till 
 > **Note**
 >
 > - **PayBill Flow** (`CustomerPayBillOnline`) requires an `account_number` (AccountReference).
-> - **Till Number Flow** (`CustomerBuyGoodsOnline`) does **not** require an `account_number`.
+> - **Till Number Flow** (`CustomerBuyGoodsOnline`) You can pass any value for account number (AccountReference).
 
 This method requires a few parameters:
 
 1. `phonenumber` - Phone number of the customer
 2. `amount` - Amount of money to be paid by a customer
-3. `account_number`(optional) - The account number to the paybill which will be used to identify which user paid.
+3. `account_number` - The account reference to identify a transaction
 4. `callbackurl`(optional) - A URL where safaricom can send the response to.
 5. `transaction_type` - can either be `Mpesa::PAYBILL` for paybill transactions or `Mpesa::TILL` for till number transactions.
 
@@ -50,7 +50,7 @@ Call the `stkpush()` method on the Mpesa facade. Make sure you have set `passkey
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response=Mpesa::stkpush($phonenumber, $amount, $account_number=null,$callbackurl = null, Mpesa::PAYBILL);
+$response=Mpesa::stkpush($phonenumber, $amount, $account_number,$callbackurl = null, Mpesa::PAYBILL);
 
 $result = json_decode((string)$response);
 return $result;
@@ -84,7 +84,7 @@ To initiate a `Till Number (Buy Goods)` STK Push, call `stkpush()` with `$transa
 Note these points:
 
 - Use a Till Number shortcode (not a PayBill shortcode).
-- Do not supply an accountNumber for Till flows
+- Ensure you set both the business short code and till number
 
 ```php
 
@@ -93,7 +93,7 @@ use Iankumu\Mpesa\Facades\Mpesa;
 $response = Mpesa::stkpush(
     $phoneNumber     = '254712345678',
     $amount          = 50,
-    $account_number   = null,              // Must be null for TILL
+    $account_number   = 'CUST-1',
     $callbackUrl     = 'https://example.com/till-callback',
     $transactionType = Mpesa::TILL
 );
@@ -240,7 +240,7 @@ To simulate you need to pass these parameters to `c2bsimulate` method.
 2. `amount`- The amount to be charged
 3. `shortcode` Test paybill or till number
 4. `command_id` The two transactions that can be simulated are `CustomerPayBillOnline` and `CustomerBuyGoodsOnline`.
-5. `account_number`(optional) This is the test account number if the command id is `CustomerPayBillOnline`. You can leave it null if you are simulating till payments.
+5. `account_number`(optional) This is the test account number if the command id is `CustomerPayBillOnline`. You can provide any value as account_number if you are simulating till payments.
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
