@@ -111,12 +111,9 @@ class Mpesa
             'TransactionType' => $transactionType, //Can be CustomerPayBillOnline or CustomerBuyGoodsOnline
             'PhoneNumber' => $this->phoneValidator($phonenumber), // replace this with your phone number
             'TransactionDesc' => 'Payment', //Maximum of 13 Characters.
+            'AccountReference' => $account_number, //Account Number. Maximum of 12 Characters.
             'CallBackURL' => $this->resolveCallbackUrl($callbackurl, 'callback_url', 'callback_url'),
         ];
-
-        if ($transactionType === self::PAYBILL) {
-            $data['AccountReference'] = $account_number; //Account Number for a paybill..Maximum of 12 Characters.
-        }
 
         return $this->MpesaRequest($url, $data);
     }
