@@ -1,4 +1,4 @@
-![Laravel Mpesa Package](https://www.iankumu.com/blog/wp-content/uploads/2023/01/Laravel-Mpesa-Banner.png)
+![Laravel Mpesa Package](https://assets.iankumu.com/2023/01/Laravel-Mpesa-Banner.png)
 
 # Mpesa Package for Laravel
 
@@ -58,7 +58,7 @@ return [
         */
     'mpesa_consumer_secret' => env('MPESA_CONSUMER_SECRET'),
 
-    
+
     /*-----------------------------------------
         |The Mpesa B2C Consumer Key
         |------------------------------------------
@@ -70,7 +70,7 @@ return [
         |------------------------------------------
         */
     'b2c_consumer_secret' => env('B2C_CONSUMER_SECRET'),
-    
+
     /*-----------------------------------------
         |The Lipa na Mpesa Online Passkey
         |------------------------------------------
