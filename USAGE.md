@@ -96,6 +96,7 @@ $response = Mpesa::stkpush(
     $account_number   = 'CUST-1',
     $callbackUrl     = 'https://example.com/till-callback',
     $transactionType = Mpesa::TILL
+    $shortCodeType = 'C2B'
 );
 
 /** @var \Illuminate\Http\Client\Response $response */
@@ -116,7 +117,7 @@ You should get the following response after a successful execution
 }
 ```
 
-Also a promt should have been sent to the phonenumber you specified. After the customer `completes` or `cancels` the payment, Safaricom will send a response to your `$callbackUrl`:
+Also a prompt should have been sent to the phonenumber you specified. After the customer `completes` or `cancels` the payment, Safaricom will send a response to your `$callbackUrl`:
 
 ```json
 {
@@ -160,7 +161,7 @@ This API enables you to query the status of STKPUSH payment. This is useful of y
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response=Mpesa::stkquery($checkoutRequestId);
+$response=Mpesa::stkquery($checkoutRequestId, $shortCodeType = 'C2B');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -189,7 +190,7 @@ This API enables you to register the callback URLs through which you can receive
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response=Mpesa::c2bregisterURLS($shortcode,$confirmurl = null, $validateurl = null);
+$response=Mpesa::c2bregisterURLS($shortcode,$confirmurl = null, $validateurl = null, $shortCodeType = 'C2B');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -213,7 +214,7 @@ OR
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response = Mpesa::c2bregisterURLS(600998,'https://test.test/confirm','https://test.test/validate');
+$response = Mpesa::c2bregisterURLS(600998,'https://test.test/confirm','https://test.test/validate', 'C2B');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -241,10 +242,11 @@ To simulate you need to pass these parameters to `c2bsimulate` method.
 3. `shortcode` Test paybill or till number
 4. `command_id` The two transactions that can be simulated are `CustomerPayBillOnline` and `CustomerBuyGoodsOnline`.
 5. `account_number`(optional) This is the test account number if the command id is `CustomerPayBillOnline`. You can provide any value as account_number if you are simulating till payments.
+6. `shortCodeType` - The type of shortcode. Can be `C2B`, `B2C` or `B2B`. Default is `C2B`
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response=Mpesa::c2bsimulate($phonenumber, $amount, $shortcode, $command_id, $account_number = NULL);
+$response=Mpesa::c2bsimulate($phonenumber, $amount, $shortcode, $command_id, $account_number = NULL, $shortCodeType = 'C2B');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -273,10 +275,11 @@ To use this API you need to call `b2c()` method on the `Mpesa` facade. This func
 2. `command_id` -This specifies the type of transaction.There are three types of transactions available: `SalaryPayment`, `BusinessPayment` or `PromotionPayment`
 3. `Amount` - Amount of money to be sent to the customer.
 4. `Remarks` - small decription of the payment being made.
+5. `shortCodeType` - The type of shortcode. Can be `C2B`, `B2C` or `B2B`. Default is `B2C`
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response =Mpesa::b2c($phonenumber, $command_id, $amount, $remarks,$result_url = null, $timeout_url = null);
+$response =Mpesa::b2c($phonenumber, $command_id, $amount, $remarks,$result_url = null, $timeout_url = null, $shortCodeType = 'B2C');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -296,7 +299,7 @@ OR
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response=Mpesa::b2c('0708374149','SalaryPayment',1000,'salary payment','https://test.test/result','https://test.test/timeout');
+$response=Mpesa::b2c('0708374149','SalaryPayment',1000,'salary payment','https://test.test/result','https://test.test/timeout', 'B2C');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -308,7 +311,7 @@ If the ID provided does not match the phone number on Safaricom Database, the tr
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response=Mpesa::validated_b2c('0708374149','SalaryPayment',1000,'salary payment','12345678','https://test.test/result','https://test.test/timeout');
+$response=Mpesa::validated_b2c('0708374149','SalaryPayment',1000,'salary payment','12345678','https://test.test/result','https://test.test/timeout','B2C');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -397,10 +400,11 @@ To use this API you need to call `transactionStatus()` method on the `Mpesa` fac
 2. `transactionid` - Unique identifier to identify a transaction on M-Pesa
 3. `identiertype` - Type of organization receiving the transaction. Can be `1` – MSISDN(phonenumber) `2` – Till Number `4` – Organization short code(paybill)
 4. `Remarks` - small decription
+5. `shortCodeType` - The type of shortcode. Can be `C2B`, `B2C` or `B2B`. Default is `C2B`
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response = Mpesa::transactionStatus($shortcode, $transactionid, $identiertype, $remarks, $result_url = null, $timeout_url = null);
+$response = Mpesa::transactionStatus($shortcode, $transactionid, $identiertype, $remarks, $result_url = null, $timeout_url = null, $shortCodeType = 'C2B');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -409,7 +413,7 @@ return $result;
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response = Mpesa::transactionStatus('600999', 'OEI2AK4Q16', 4, 'Check transaction status','https://test.test/result','https://test.test/timeout');
+$response = Mpesa::transactionStatus('600999', 'OEI2AK4Q16', 4, 'Check transaction status','https://test.test/result','https://test.test/timeout', 'C2B');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -515,10 +519,11 @@ To use this API you need to call `accountBalance()` method on the `Mpesa` facade
 1. `shortcode` - The Till number, paybill or phonenumber that received the payment
 2. `identiertype` - Type of organization receiving the transaction. Can be `1` – MSISDN(phonenumber) `2` – Till Number `4` – Organization short code(paybill)
 3. `Remarks` - small decription
+4. `shortCodeType` - The type of shortcode. Can be `C2B`, `B2C` or `B2B`. Default is `C2B`
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response = Mpesa::accountBalance($shortcode, $identiertype, $remarks,$result_url = null, $timeout_url = null);
+$response = Mpesa::accountBalance($shortcode, $identiertype, $remarks,$result_url = null, $timeout_url = null, $shortCodeType = 'C2B');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -527,7 +532,7 @@ return $result;
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response = Mpesa::accountBalance('600983', 4, 'check account balance','https://test.test/result','https://test.test/timeout');
+$response = Mpesa::accountBalance('600983', 4, 'check account balance','https://test.test/result','https://test.test/timeout', 'C2B');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -548,10 +553,11 @@ To use this API you need to call `reversal()` method on the `Mpesa` facade. This
 2. `transactionid` - Unique identifier to identify a transaction on M-Pesa
 3. `amount` - The Amount to be reversed
 4. `Remarks` - small decription
+5. `shortCodeType` - The type of shortcode. Can be `C2B`, `B2C` or `B2B`. Default is `C2B`
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response = Mpesa::reversal($shortcode, $transactionid, $amount, $remarks,$reverseresulturl = null, $reversetimeouturl = null);
+$response = Mpesa::reversal($shortcode, $transactionid, $amount, $remarks,$reverseresulturl = null, $reversetimeouturl = null, $shortCodeType = 'C2B');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -560,7 +566,7 @@ return $result;
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
-$response = Mpesa::reversal('600981','OEI2AK4Q16', 500, 'Wrong Payment','https://test.test/result','https://test.test/timeout');
+$response = Mpesa::reversal('600981','OEI2AK4Q16', 500, 'Wrong Payment','https://test.test/result','https://test.test/timeout', 'C2B');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
@@ -582,11 +588,12 @@ To use this API you need to call `b2b()` method on the `Mpesa` facade. This func
 3. `amount` - The amount to send to the recipient
 4. `remarks` - small decription of the payment being made.
 5. `account_number` - Required for `BusinessPaybill` CommandID
+6. `shortCodeType` - The type of shortcode. Can be `C2B`, `B2C` or `B2B`. Default is `B2B`
 
 ```php
 use Iankumu\Mpesa\Facades\Mpesa;
 
-$response = Mpesa::b2b($receiver_shortcode, $command_id, $amount, $remarks, $account_number = null,$b2b_result_url = null, $b2b_timeout_url = null);
+$response = Mpesa::b2b($receiver_shortcode, $command_id, $amount, $remarks, $account_number = null,$b2b_result_url = null, $b2b_timeout_url = null, $shortCodeType = 'B2B');
 
 /** @var \Illuminate\Http\Client\Response $response */
 $result = $response->json();
