@@ -16,7 +16,7 @@ it('can generate token', function () {
         'https://sandbox.safaricom.co.ke/*' => Http::response($expectedResponse),
     ]);
 
-    $response = (new Mpesa())->generateAccessToken();
+    $response = (new Mpesa())->generateAccessToken("C2B");
 
     expect($response)->toBe('Test Token');
 });

@@ -20,6 +20,8 @@ class TestCase extends Orchestra
         $app['config']->set('mpesa.environment', 'sandbox');
         $app['config']->set('mpesa.mpesa_consumer_key', '12345');
         $app['config']->set('mpesa.mpesa_consumer_secret', '12345');
+        $app['config']->set('mpesa.b2c_consumer_key', '12345');
+        $app['config']->set('mpesa.b2c_consumer_secret', '12345');
     }
 
     /**

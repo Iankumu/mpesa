@@ -47,17 +47,30 @@ return [
     'environment' => env('MPESA_ENVIRONMENT', 'sandbox'),
 
     /*-----------------------------------------
-        |The Mpesa Consumer Key
+        |The Mpesa C2B Consumer Key
         |------------------------------------------
         */
     'mpesa_consumer_key' => env('MPESA_CONSUMER_KEY'),
 
     /*-----------------------------------------
-        |The Mpesa Consumer Secret
+        |The Mpesa C2B Consumer Secret
         |------------------------------------------
         */
     'mpesa_consumer_secret' => env('MPESA_CONSUMER_SECRET'),
 
+    
+    /*-----------------------------------------
+        |The Mpesa B2C Consumer Key
+        |------------------------------------------
+        */
+    'b2c_consumer_key' => env('B2C_CONSUMER_KEY'),
+
+    /*-----------------------------------------
+        |The Mpesa B2C Consumer Secret
+        |------------------------------------------
+        */
+    'b2c_consumer_secret' => env('B2C_CONSUMER_SECRET'),
+    
     /*-----------------------------------------
         |The Lipa na Mpesa Online Passkey
         |------------------------------------------
