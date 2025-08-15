@@ -157,6 +157,7 @@ Thank you for considering contributing to Laravel Mpesa! All contributions and P
 
 - [Ian Kumu](https://github.com/IanKumu)
 - [Mugwanjira Maina](https://github.com/maina401)
+- [Dennis Muoki](https://github.com/muokid3)
 - [All Contributors](../../contributors)
 
 ### License
