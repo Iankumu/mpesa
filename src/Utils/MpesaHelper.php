@@ -25,10 +25,17 @@ trait MpesaHelper
     }
 
     // Generate an AccessToken using the Consumer Key and Consumer Secret
-    public function generateAccessToken()
+    public function generateAccessToken($shortCodeType)
     {
-        $consumer_key = $this->getConfig('mpesa_consumer_key');
-        $consumer_secret = $this->getConfig('mpesa_consumer_secret');
+        if ($shortCodeType == "B2C" || $shortCodeType == "B2B") {
+            //use to B2C consumer key and secret
+            $consumer_key = $this->getConfig('b2c_consumer_key');
+            $consumer_secret = $this->getConfig('b2c_consumer_secret');
+        } else {
+            //default to C2B consumer key and secret
+            $consumer_key = $this->getConfig('mpesa_consumer_key');
+            $consumer_secret = $this->getConfig('mpesa_consumer_secret');
+        }
 
         $url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
 
@@ -41,10 +48,10 @@ trait MpesaHelper
     }
 
     // Common Format Of The Mpesa APIs.
-    public function MpesaRequest($url, $body)
+    public function MpesaRequest($url, $body, $shortCodeType = 'C2B')
     {
 
-        $response = Http::withToken($this->generateAccessToken())
+        $response = Http::withToken($this->generateAccessToken($shortCodeType))
             ->acceptJson()
             ->post($url, $body);
 

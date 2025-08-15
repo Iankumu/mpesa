@@ -80,9 +80,10 @@ class Mpesa
      * @param string $account_number The account number for a paybill or a reference number for a till number. Maximum of 12 Characters.
      * @param string|null $callbackurl The callback url for Mpesa Express
      * @param string $transactionType The type of transaction. Can be CustomerPayBillOnline or CustomerBuyGoodsOnline
+     * @param string $shortCodeType The type of shortcode to use. Can be C2B for incoming payments or B2C and B2B for outgoing payments.
      * @return \Illuminate\Http\Client\Response
      */
-    public function stkpush($phonenumber, $amount, $account_number, $callbackurl = null, $transactionType = self::PAYBILL)
+    public function stkpush($phonenumber, $amount, $account_number, $callbackurl = null, $transactionType = self::PAYBILL, $shortCodeType = 'C2B')
     {
 
         $validTypes = [self::PAYBILL, self::TILL];
@@ -116,7 +117,7 @@ class Mpesa
             'CallBackURL' => $this->resolveCallbackUrl($callbackurl, 'callback_url', 'callback_url'),
         ];
 
-        return $this->MpesaRequest($url, $data);
+        return $this->MpesaRequest($url, $data, $shortCodeType);
     }
 
     /**
@@ -125,9 +126,10 @@ class Mpesa
      * This method is used to check the status of a Lipa Na M-Pesa Online Payment.
      *
      * @param string $checkoutRequestId This is a global unique identifier of the processed checkout transaction request.
+     * @param string $shortCodeType The type of shortcode to use. Can be C2B for incoming payments or B2C and B2B for outgoing payments.
      * @return \Illuminate\Http\Client\Response
      */
-    public function stkquery($checkoutRequestId)
+    public function stkquery($checkoutRequestId, $shortCodeType = 'C2B')
     {
         $post_data = [
             'BusinessShortCode' => $this->shortcode,
@@ -138,7 +140,7 @@ class Mpesa
 
         $url = $this->url . '/mpesa/stkpushquery/v1/query';
 
-        return $this->MpesaRequest($url, $post_data);
+        return $this->MpesaRequest($url, $post_data, $shortCodeType);
     }
 
     /**
@@ -152,9 +154,10 @@ class Mpesa
      * @param string $remarks Any additional information. Must be present.
      * @param string|null $result_url The Result Url where payload will be sent.
      * @param string|null $timeout_url The Timeout Url where payload will be sent. Must be present.
+     * @param string $shortCodeType The type of shortcode to use. Can be C2B for incoming payments or B2C and B2B for outgoing payments.
      * @return \Illuminate\Http\Client\Response
      */
-    public function b2c($phonenumber, $command_id, $amount, $remarks, $result_url = null, $timeout_url = null)
+    public function b2c($phonenumber, $command_id, $amount, $remarks, $result_url = null, $timeout_url = null, $shortCodeType = 'B2C')
     {
         $url = $this->url . '/mpesa/b2c/v1/paymentrequest';
 
@@ -171,7 +174,7 @@ class Mpesa
             'QueueTimeOutURL' => $this->resolveCallbackUrl($timeout_url, 'b2c_timeout_url', 'b2c_timeout_url'),
         ];
 
-        return $this->MpesaRequest($url, $body);
+        return $this->MpesaRequest($url, $body, $shortCodeType);
     }
 
     /**
@@ -187,9 +190,10 @@ class Mpesa
      * @param string $id_number The id number of the recipient
      * @param string|null $result_url The Result Url where payload will be sent.
      * @param string|null $timeout_url The Timeout Url where payload will be sent. Must be present.
+     * @param string $shortCodeType The type of shortcode to use. Can be C2B for incoming payments or B2C and B2B for outgoing payments.
      * @return \Illuminate\Http\Client\Response
      */
-    public function validated_b2c($phonenumber, $command_id, $amount, $remarks, $id_number, $result_url = null, $timeout_url = null)
+    public function validated_b2c($phonenumber, $command_id, $amount, $remarks, $id_number, $result_url = null, $timeout_url = null, $shortCodeType = 'B2C')
     {
         $url = $this->url . '/mpesa/b2cvalidate/v2/paymentrequest';
         $body = [
@@ -208,7 +212,7 @@ class Mpesa
             'QueueTimeOutURL' => $this->resolveCallbackUrl($timeout_url, 'b2c_timeout_url', 'b2c_timeout_url'),
         ];
 
-        return $this->MpesaRequest($url, $body);
+        return $this->MpesaRequest($url, $body, $shortCodeType);
     }
 
     /**
@@ -221,9 +225,10 @@ class Mpesa
      * @param string $command_id The type of transaction being made. Can be BusinessPayBill, MerchantToMerchantTransfer, MerchantTransferFromMerchantToWorking, MerchantServicesMMFAccountTransfer, AgencyFloatAdvance
      * @param string $remarks Any additional information. Must be present.
      * @param string $account_number Required for “BusinessPaybill” CommandID.
-     * * @return \Illuminate\Http\Client\Response
+     * @param string $shortCodeType The type of shortcode to use. Can be C2B for incoming payments or B2C and B2B for outgoing payments.
+     * @return \Illuminate\Http\Client\Response
      */
-    public function b2b($receiver_shortcode, $command_id, $amount, $remarks, $account_number = null, $b2b_result_url = null, $b2b_timeout_url = null)
+    public function b2b($receiver_shortcode, $command_id, $amount, $remarks, $account_number = null, $b2b_result_url = null, $b2b_timeout_url = null, $shortCodeType = 'B2B')
     {
         $url = $this->url . "/mpesa/b2b/v1/paymentrequest";
 
@@ -248,7 +253,7 @@ class Mpesa
             $body['AccountReference'] = $account_number;
         }
 
-        return $this->MpesaRequest($url, $body);
+        return $this->MpesaRequest($url, $body, $shortCodeType);
     }
 
     /**
@@ -259,9 +264,10 @@ class Mpesa
      * @param string $shortcode The till number or paybill number the urls will be associated with
      * @param string|null $confirmurl The URL that receives the confirmation of the transaction
      * @param string|null $validateurl The URL that receives the validation of the transaction
+     * @param string $shortCodeType The type of shortcode to use. Can be C2B for incoming payments or B2C and B2B for outgoing payments.
      * @return \Illuminate\Http\Client\Response
      */
-    public function c2bregisterURLS($shortcode, $confirmurl = null, $validateurl = null)
+    public function c2bregisterURLS($shortcode, $confirmurl = null, $validateurl = null, $shortCodeType = 'C2B')
     {
         $url = $this->url . '/mpesa/c2b/v2/registerurl';
 
@@ -272,7 +278,7 @@ class Mpesa
             'ValidationURL' => $this->resolveCallbackUrl($validateurl, 'c2b_validation_url', 'c2b_validation_url'),
         ];
 
-        return $this->MpesaRequest($url, $body);
+        return $this->MpesaRequest($url, $body, $shortCodeType);
     }
 
     /**
@@ -285,9 +291,10 @@ class Mpesa
      * @param string $shortcode The Paybill/Till number receiving the funds
      * @param string $command_id The Type of transaction. Whether it is a paybill transaction(CustomerPayBillOnline) or a Till number transaction(CustomerBuyGoodsOnline)
      * @param string $account_number The account number for a paybill. The default is null
+     * @param string $shortCodeType The type of shortcode to use. Can be C2B for incoming payments or B2C and B2B for outgoing payments.
      * @return \Illuminate\Http\Client\Response
      */
-    public function c2bsimulate($phonenumber, $amount, $shortcode, $command_id, $account_number = null)
+    public function c2bsimulate($phonenumber, $amount, $shortcode, $command_id, $account_number = null, $shortCodeType = 'C2B')
     {
         if ($command_id == self::PAYBILL) {
             //Paybill Request Body
@@ -310,7 +317,7 @@ class Mpesa
 
         $url = $this->url . '/mpesa/c2b/v2/simulate';
 
-        return $this->MpesaRequest($url, $data);
+        return $this->MpesaRequest($url, $data, $shortCodeType);
     }
 
     /**
@@ -324,9 +331,10 @@ class Mpesa
      * @param string $remarks Any additional information. Must be present.
      * @param string|null $result_url The Result Url where payload will be sent.
      * @param string|null $timeout_url The Timeout Url where payload will be sent.
+     * @param string $shortCodeType The type of shortcode to use. Can be C2B for incoming payments or B2C and B2B for outgoing payments.
      * @return \Illuminate\Http\Client\Response
      */
-    public function transactionStatus($shortcode, $transactionid, $identiertype, $remarks, $result_url = null, $timeout_url = null)
+    public function transactionStatus($shortcode, $transactionid, $identiertype, $remarks, $result_url = null, $timeout_url = null, $shortCodeType = 'C2B')
     {
         $url = $this->url . '/mpesa/transactionstatus/v1/query';
 
@@ -343,7 +351,7 @@ class Mpesa
             'QueueTimeOutURL' => $this->resolveCallbackUrl($timeout_url, 'status_timeout_url', 'status_timeout_url'),
         ];
 
-        return $this->MpesaRequest($url, $body);
+        return $this->MpesaRequest($url, $body, $shortCodeType);
     }
 
     /**
@@ -356,9 +364,10 @@ class Mpesa
      * @param string $remarks Any additional information. Must be present.
      * @param string|null $result_url The Result Url where payload will be sent.
      * @param string|null $timeout_url The Timeout Url where payload will be sent.
+     * @param string $shortCodeType The type of shortcode to use. Can be C2B for incoming payments or B2C and B2B for outgoing payments.
      * @return \Illuminate\Http\Client\Response
      */
-    public function accountBalance($shortcode, $identiertype, $remarks, $result_url = null, $timeout_url = null)
+    public function accountBalance($shortcode, $identiertype, $remarks, $result_url = null, $timeout_url = null, $shortCodeType = 'C2B')
     {
         $url = $this->url . '/mpesa/accountbalance/v1/query';
 
@@ -373,7 +382,7 @@ class Mpesa
             'QueueTimeOutURL' => $this->resolveCallbackUrl($timeout_url, 'balance_timeout_url', 'balance_timeout_url'),
         ];
 
-        return $this->MpesaRequest($url, $body);
+        return $this->MpesaRequest($url, $body, $shortCodeType);
     }
 
     /**
@@ -385,9 +394,10 @@ class Mpesa
      * @param int $shortcode Your Org's shortcode.
      * @param string $transactionid This is the M-Pesa Transaction ID of the transaction which you wish to reverse.
      * @param string $remarks Any additional information. Must be present.
+     * @param string $shortCodeType The type of shortcode to use. Can be C2B for incoming payments or B2C and B2B for outgoing payments.
      * @return \Illuminate\Http\Client\Response
      */
-    public function reversal($shortcode, $transactionid, $amount, $remarks, $reverseresulturl = null, $reversetimeouturl = null)
+    public function reversal($shortcode, $transactionid, $amount, $remarks, $reverseresulturl = null, $reversetimeouturl = null, $shortCodeType = 'C2B')
     {
         $url = $this->url . '/mpesa/reversal/v1/request';
 
@@ -405,6 +415,6 @@ class Mpesa
             'QueueTimeOutURL' => $this->resolveCallbackUrl($reversetimeouturl, 'reversal_timeout_url', 'reversal_timeout_url'),
         ];
 
-        return $this->MpesaRequest($url, $body);
+        return $this->MpesaRequest($url, $body, $shortCodeType);
     }
 }
